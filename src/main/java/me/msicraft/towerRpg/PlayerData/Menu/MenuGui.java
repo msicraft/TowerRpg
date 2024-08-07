@@ -6,17 +6,16 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-public class MenuGui extends CustomGui implements InventoryHolder {
+public class MenuGui extends CustomGui {
 
     private final Inventory gui;
 
     public MenuGui() {
         this.gui = Bukkit.createInventory(this, 54, Component.text("메인 메뉴"));
-
         setMain();
     }
 
@@ -36,9 +35,10 @@ public class MenuGui extends CustomGui implements InventoryHolder {
         gui.setItem(13, itemStack);
     }
 
+
     @Override
-    public Inventory getInventory() {
-        return this.gui;
+    public @NotNull Inventory getInventory() {
+        return gui;
     }
 
 }

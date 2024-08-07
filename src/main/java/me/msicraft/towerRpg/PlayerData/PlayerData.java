@@ -14,14 +14,11 @@ public class PlayerData {
     private final Player player;
     private final PlayerDataFile playerDataFile;
 
-    private final MenuGui cachedMenuGui;
     private final Map<GuiType, CustomGui> customGuiMap = new HashMap<>();
 
     public PlayerData(Player player) {
         this.player = player;
         this.playerDataFile = new PlayerDataFile(player);
-
-        cachedMenuGui = new MenuGui();
     }
 
     public Player getPlayer() {
@@ -40,13 +37,10 @@ public class PlayerData {
                     customGui = new MenuGui();
                     customGuiMap.put(guiType, customGui);
                 }
+                default -> customGui = new MenuGui();
             }
         }
         return customGui;
-    }
-
-    public MenuGui getMenuGui() {
-        return cachedMenuGui;
     }
 
 }

@@ -1,4 +1,6 @@
 package me.msicraft.towerRpg.PlayerData.Data;
 
-public abstract class CustomGui {
+import org.bukkit.inventory.InventoryHolder;
+
+public abstract class CustomGui implements InventoryHolder {
 }
