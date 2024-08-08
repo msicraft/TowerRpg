@@ -4,6 +4,9 @@ import me.msicraft.towerRpg.PlayerData.Data.CustomGui;
 import me.msicraft.towerRpg.PlayerData.Data.GuiType;
 import me.msicraft.towerRpg.PlayerData.File.PlayerDataFile;
 import me.msicraft.towerRpg.PlayerData.Menu.MenuGui;
+import me.msicraft.towerRpg.TowerRpg;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -37,7 +40,11 @@ public class PlayerData {
                     customGui = new MenuGui();
                     customGuiMap.put(guiType, customGui);
                 }
-                default -> customGui = new MenuGui();
+                default -> {
+                    customGui = new MenuGui();
+                    Bukkit.getConsoleSender().sendMessage(TowerRpg.PREFIX + ChatColor.YELLOW + "플레이어: " + player.getName(),
+                            ChatColor.YELLOW + "메뉴 생성중 기본값 사용이 발생하였습니다.");
+                }
             }
         }
         return customGui;

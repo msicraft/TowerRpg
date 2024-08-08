@@ -3,6 +3,8 @@ package me.msicraft.towerRpg;
 import me.msicraft.towerRpg.PlayerData.Event.PlayerDataRelatedEvent;
 import me.msicraft.towerRpg.PlayerData.Menu.MenuGuiEvent;
 import me.msicraft.towerRpg.PlayerData.PlayerDataManager;
+import me.msicraft.towerRpg.Prefix.File.PrefixDataFile;
+import me.msicraft.towerRpg.Prefix.PrefixManager;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,6 +25,9 @@ public final class TowerRpg extends JavaPlugin {
     public static final String PREFIX = ChatColor.GREEN + "[TowerRpg] ";
 
     private PlayerDataManager playerDataManager;
+    private PrefixManager prefixManager;
+
+    private PrefixDataFile prefixDataFile;
 
     @Override
     public void onEnable() {
@@ -30,6 +35,9 @@ public final class TowerRpg extends JavaPlugin {
         createConfigFile();
 
         this.playerDataManager = new PlayerDataManager(this);
+        this.prefixManager = new PrefixManager(this);
+
+        this.prefixDataFile = new PrefixDataFile(this);
 
         registeredEvents();
         registeredCommands();
@@ -73,4 +81,14 @@ public final class TowerRpg extends JavaPlugin {
     public PlayerDataManager getPlayerDataManager() {
         return playerDataManager;
     }
+
+    public PrefixManager getPrefixManager() {
+        return prefixManager;
+    }
+
+    public PrefixDataFile getPrefixDataFile() {
+        return prefixDataFile;
+    }
+
 }
+
