@@ -1,1 +1,5 @@
 Prefix:
+  Test:
+    DisplayName: "&7테스트"
+    Stat:
+      # - <stat_name>:<valueType>:<value>
