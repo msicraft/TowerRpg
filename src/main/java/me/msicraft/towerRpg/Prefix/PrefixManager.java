@@ -29,8 +29,17 @@ public class PrefixManager {
             for (String id : sets) {
                 String path = "Prefix." + id;
                 String displayName = config.getString(path + ".DisplayName");
+                Prefix prefix = new Prefix(id, displayName, config.getStringList(path + ".Stat"));
+                prefixMap.put(id, prefix);
             }
         }
+    }
+
+    public Prefix getPrefix(String id) {
+        if (prefixMap.containsKey(id)) {
+            return prefixMap.get(id);
+        }
+        return null;
     }
 
 }

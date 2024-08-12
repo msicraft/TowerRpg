@@ -13,7 +13,7 @@ public class Prefix {
     private final String id;
     private String displayName = "[Unknown]";
 
-    private final Set<PrefixStat> statSets = new HashSet<>();
+    private final Set<PrefixStat> stats = new HashSet<>();
 
     public Prefix(String id, String displayName, List<String> statList) {
         this.id = id;
@@ -28,20 +28,31 @@ public class Prefix {
             double value = Double.parseDouble(a[2]);
 
             PrefixStat prefixStat = new PrefixStat(statName, statValueType, value);
-            statSets.add(prefixStat);
+            stats.add(prefixStat);
         }
     }
 
     public void updatePrefixStat(PrefixDataFile prefixDataFile) {
+        List<String> statList = prefixDataFile.getConfig().getStringList("Prefix." + id + ".Stat");
+        stats.clear();
 
+        for (String statFormat : statList) {
+            String[] a = statFormat.split(":");
+            String statName = a[0];
+            StatValueType statValueType = StatValueType.valueOf(a[1].toUpperCase());
+            double value = Double.parseDouble(a[2]);
+
+            PrefixStat prefixStat = new PrefixStat(statName, statValueType, value);
+            stats.add(prefixStat);
+        }
     }
 
     public String getId() {
         return id;
     }
 
-    public Set<PrefixStat> getStatSets() {
-        return statSets;
+    public Set<PrefixStat> getStats() {
+        return stats;
     }
 
     public String getDisplayName() {
