@@ -1,10 +1,13 @@
-package me.msicraft.towerRpg.PlayerData.Menu;
+package me.msicraft.towerRpg.Menu.Event;
 
+import me.msicraft.towerRpg.Menu.MenuGui;
 import me.msicraft.towerRpg.PlayerData.Data.CustomGui;
 import me.msicraft.towerRpg.PlayerData.Data.GuiType;
-import me.msicraft.towerRpg.PlayerData.PlayerData;
+import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.PlayerData.PlayerDataManager;
 import me.msicraft.towerRpg.TowerRpg;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 public class MenuGuiEvent implements Listener {
 
@@ -40,7 +44,7 @@ public class MenuGuiEvent implements Listener {
     @EventHandler
     public void mainMenuGuiClickEvent(InventoryClickEvent e) {
         Inventory topInventory = e.getView().getTopInventory();
-        if (topInventory.getHolder(false) instanceof MenuGui) {
+        if (topInventory.getHolder(false) instanceof MenuGui menuGui) {
             ClickType type = e.getClick();
             if (type == ClickType.NUMBER_KEY || type == ClickType.SWAP_OFFHAND
                     || type == ClickType.SHIFT_LEFT || type == ClickType.SHIFT_RIGHT) {
@@ -57,10 +61,24 @@ public class MenuGuiEvent implements Listener {
                 ItemMeta itemMeta = itemStack.getItemMeta();
                 if (itemMeta != null) {
                     PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-
-                    CustomGui customGui = playerData.getCustomGui(GuiType.MAIN);
-                    if (customGui instanceof MenuGui menuGui) {
-
+                    if (dataContainer.has(new NamespacedKey(plugin, "MenuGui_Main"))) {
+                        String data = dataContainer.get(new NamespacedKey(plugin, "MenuGui_Main"), PersistentDataType.STRING);
+                        if (data != null) {
+                            switch (data) {
+                                case "RpgInventory" -> {
+                                    Bukkit.dispatchCommand(player, "rpginventory");
+                                }
+                                case "RpgStat" -> {
+                                    Bukkit.dispatchCommand(player, "stats");
+                                }
+                                case "RpgSkill" -> {
+                                    Bukkit.dispatchCommand(player,"skills");
+                                }
+                                case "ShopInventory" -> {
+                                    plugin.getShopManager().openShopInventory(player, 0);
+                                }
+                            }
+                        }
                     }
                 }
             }

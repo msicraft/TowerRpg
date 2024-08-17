@@ -3,3 +3,7 @@ version: '1.0'
 main: me.msicraft.towerRpg.TowerRpg
 api-version: '1.20'
 depend: [MythicLib, MMOItems]
+commands:
+  towerrpg:
+    description: 'Main commands'
+

@@ -1,4 +1,4 @@
-package me.msicraft.towerRpg.PlayerData.Menu;
+package me.msicraft.towerRpg.Menu;
 
 import me.msicraft.towerRpg.PlayerData.Data.CustomGui;
 import me.msicraft.towerRpg.Utils.GuiUtil;
@@ -24,15 +24,19 @@ public class MenuGui extends CustomGui {
         ItemStack itemStack;
         itemStack = GuiUtil.createItemStack(Material.IRON_CHESTPLATE, "장비 인벤토리", GuiUtil.EMPTY_LORE, -1,
                 dataTag, "RpgInventory", new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES});
-        gui.setItem(11, itemStack);
+        gui.setItem(10, itemStack);
 
         itemStack = GuiUtil.createItemStack(Material.IRON_SWORD, "스탯", GuiUtil.EMPTY_LORE, -1,
                 dataTag, "RpgStat", new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES});
-        gui.setItem(12, itemStack);
+        gui.setItem(11, itemStack);
 
         itemStack = GuiUtil.createItemStack(Material.BOOK, "스킬", GuiUtil.EMPTY_LORE, -1,
                 dataTag, "RpgSkill");
-        gui.setItem(13, itemStack);
+        gui.setItem(12, itemStack);
+
+        itemStack = GuiUtil.createItemStack(Material.CHEST, "상점", GuiUtil.EMPTY_LORE, -1,
+                dataTag, "ShopInventory");
+        gui.setItem(18, itemStack);
     }
 
 

@@ -1,7 +1,7 @@
-package me.msicraft.towerRpg.Prefix;
+package me.msicraft.towerRpg.Prefix.Data;
 
-import me.msicraft.towerRpg.Prefix.Data.StatValueType;
 import me.msicraft.towerRpg.Prefix.File.PrefixDataFile;
+import me.msicraft.towerRpg.Prefix.PrefixStat;
 import org.bukkit.ChatColor;
 
 import java.util.HashSet;
@@ -32,9 +32,11 @@ public class Prefix {
         }
     }
 
-    public void updatePrefixStat(PrefixDataFile prefixDataFile) {
-        List<String> statList = prefixDataFile.getConfig().getStringList("Prefix." + id + ".Stat");
+    public void update(PrefixDataFile prefixDataFile) {
         stats.clear();
+
+        displayName = ChatColor.translateAlternateColorCodes('&', prefixDataFile.getConfig().getString("Prefix." + id + ".DisplayName", "[Unknown]"));
+        List<String> statList = prefixDataFile.getConfig().getStringList("Prefix." + id + ".Stat");
 
         for (String statFormat : statList) {
             String[] a = statFormat.split(":");

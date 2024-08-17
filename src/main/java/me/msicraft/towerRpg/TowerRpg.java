@@ -1,14 +1,28 @@
 package me.msicraft.towerRpg;
 
+import me.msicraft.towerRpg.Command.MainCommand;
+import me.msicraft.towerRpg.Command.MainTabCompleter;
+import me.msicraft.towerRpg.Event.EntityRelatedEvent;
+import me.msicraft.towerRpg.Menu.Event.MenuGuiEvent;
+import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.PlayerData.Event.PlayerDataRelatedEvent;
-import me.msicraft.towerRpg.PlayerData.Menu.MenuGuiEvent;
 import me.msicraft.towerRpg.PlayerData.PlayerDataManager;
+import me.msicraft.towerRpg.Prefix.Data.Prefix;
 import me.msicraft.towerRpg.Prefix.File.PrefixDataFile;
 import me.msicraft.towerRpg.Prefix.PrefixManager;
+import me.msicraft.towerRpg.Shop.Event.ShopInventoryEvent;
+import me.msicraft.towerRpg.Shop.File.ShopDataFile;
+import me.msicraft.towerRpg.Shop.ShopManager;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -24,20 +38,32 @@ public final class TowerRpg extends JavaPlugin {
 
     public static final String PREFIX = ChatColor.GREEN + "[TowerRpg] ";
 
+    private Economy economy;
+
     private PlayerDataManager playerDataManager;
     private PrefixManager prefixManager;
+    private ShopManager shopManager;
 
     private PrefixDataFile prefixDataFile;
+    private ShopDataFile shopDataFile;
 
     @Override
     public void onEnable() {
         plugin = this;
         createConfigFile();
 
+        this.prefixDataFile = new PrefixDataFile(this);
+        this.shopDataFile = new ShopDataFile(this);
+
         this.playerDataManager = new PlayerDataManager(this);
         this.prefixManager = new PrefixManager(this);
+        this.shopManager = new ShopManager(this);
 
-        this.prefixDataFile = new PrefixDataFile(this);
+        if (!setupEconomy() ) {
+            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
         registeredEvents();
         registeredCommands();
@@ -49,19 +75,42 @@ public final class TowerRpg extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        shopManager.saveShopData();
+
         getServer().getConsoleSender().sendMessage(PREFIX + ChatColor.RED + "플러그인이 비 활성화 되었습니다");
     }
 
     public void registeredEvents() {
-        getServer().getPluginManager().registerEvents(new PlayerDataRelatedEvent(this), this);
-        getServer().getPluginManager().registerEvents(new MenuGuiEvent( this), this);
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new PlayerDataRelatedEvent(this), this);
+        pluginManager.registerEvents(new MenuGuiEvent( this), this);
+        pluginManager.registerEvents(new ShopInventoryEvent(this), this);
+        pluginManager.registerEvents(EntityRelatedEvent.getInstance(), this);
     }
 
     public void registeredCommands() {
+        PluginCommand pluginCommand = Bukkit.getPluginCommand("towerrpg");
+        if (pluginCommand != null) {
+            pluginCommand.setExecutor(new MainCommand(this));
+            pluginCommand.setTabCompleter(new MainTabCompleter(this));
+        }
     }
 
     public void reloadVariables() {
         reloadConfig();
+        prefixDataFile.reloadConfig();
+
+        prefixManager.update();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            PlayerData playerData = playerDataManager.getPlayerData(player);
+            Prefix prefix = playerData.getPlayerPrefix().getPrefix();
+
+            prefixManager.applyPrefix(player, prefix);
+        }
+
+        shopDataFile.reloadConfig();
+        shopManager.reloadVariables();
+        EntityRelatedEvent.getInstance().reloadVariables();
     }
 
     private void createConfigFile() {
@@ -78,6 +127,22 @@ public final class TowerRpg extends JavaPlugin {
         }
     }
 
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        economy = rsp.getProvider();
+        return economy != null;
+    }
+
+    public Economy getEconomy() {
+        return economy;
+    }
+
     public PlayerDataManager getPlayerDataManager() {
         return playerDataManager;
     }
@@ -86,8 +151,16 @@ public final class TowerRpg extends JavaPlugin {
         return prefixManager;
     }
 
+    public ShopManager getShopManager() {
+        return shopManager;
+    }
+
     public PrefixDataFile getPrefixDataFile() {
         return prefixDataFile;
+    }
+
+    public ShopDataFile getShopDataFile() {
+        return shopDataFile;
     }
 
 }

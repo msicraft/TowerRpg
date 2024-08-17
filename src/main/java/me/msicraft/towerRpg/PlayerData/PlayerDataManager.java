@@ -1,5 +1,6 @@
 package me.msicraft.towerRpg.PlayerData;
 
+import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.TowerRpg;
 import org.bukkit.entity.Player;
 

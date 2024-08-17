@@ -1,0 +1,10 @@
+Setting:
+  DisableEntityVehicleEnter: false
+  Shop:
+    UpdateTicks: 72000
+    MaxPricePercent: 0.25
+    MinPricePercent: 0.25
+    BuyPriceChangeQuantity: 64
+    SellPriceChangeQuantity: 64
+    BuyPriceChangePercent: 0.1
+    SellPriceChangePercent: 0.1
