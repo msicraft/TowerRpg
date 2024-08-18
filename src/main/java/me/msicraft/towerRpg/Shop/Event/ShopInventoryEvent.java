@@ -1,12 +1,15 @@
 package me.msicraft.towerRpg.Shop.Event;
 
+import io.papermc.paper.event.player.AsyncChatEvent;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.Shop.Data.SellItemSlot;
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
-import me.msicraft.towerRpg.Shop.ShopInventory;
+import me.msicraft.towerRpg.Shop.ShopGui;
 import me.msicraft.towerRpg.Shop.ShopManager;
 import me.msicraft.towerRpg.TowerRpg;
 import me.msicraft.towerRpg.Utils.GuiUtil;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -35,12 +38,36 @@ public class ShopInventoryEvent implements Listener {
     private final NamespacedKey sellKey = new NamespacedKey(TowerRpg.getPlugin(), "ShopInventory_Sell");
 
     @EventHandler
+    public void shopInventoryChatEdit(AsyncChatEvent e) {
+        Player player = e.getPlayer();
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+        String itemInternalName = (String) playerData.getTempData("ShopInventory_Edit_Amount", null);
+        if (itemInternalName != null) {
+            if (plugin.getShopManager().hasInternalName(itemInternalName)) {
+                e.setCancelled(true);
+                String message = PlainTextComponentSerializer.plainText().serialize(e.message());
+                if (message.equalsIgnoreCase("cancel")) {
+                    return;
+                }
+                int amount = Integer.parseInt(message.replaceAll("[^0-9]", ""));
+                playerData.setTempData("ShopInventory_" + itemInternalName + "_SelectCount", amount);
+            } else {
+                player.sendMessage(ChatColor.RED + "잘못된 내부이름 데이터입니다. 관리자에게 문의해주시기바랍니다.");
+            }
+            playerData.removeTempData("ShopInventory_Edit_Amount");
+            Bukkit.getScheduler().runTask(plugin, ()-> {
+                plugin.getShopManager().openShopInventory(player, 0);
+            });
+        }
+    }
+
+    @EventHandler
     public void shopInventoryClose(InventoryCloseEvent e) {
         if (e.getReason() == InventoryCloseEvent.Reason.OPEN_NEW) {
             return;
         }
         Inventory topInventory = e.getView().getTopInventory();
-        if (topInventory.getHolder(false) instanceof ShopInventory shopInventory) {
+        if (topInventory.getHolder(false) instanceof ShopGui shopGui) {
             Player player = (Player) e.getPlayer();
             PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
             SellItemSlot[] sellItemSlots = (SellItemSlot[]) playerData.getTempData("ShopInventory_Sell_Stacks", null);
@@ -58,7 +85,7 @@ public class ShopInventoryEvent implements Listener {
     @EventHandler
     public void shopInventoryClick(InventoryClickEvent e) {
         Inventory topInventory = e.getView().getTopInventory();
-        if (topInventory.getHolder(false) instanceof ShopInventory shopInventory) {
+        if (topInventory.getHolder(false) instanceof ShopGui shopGui) {
             ClickType type = e.getClick();
             if (type == ClickType.NUMBER_KEY || type == ClickType.SWAP_OFFHAND
                     || type == ClickType.SHIFT_LEFT || type == ClickType.SHIFT_RIGHT) {
@@ -110,6 +137,14 @@ public class ShopInventoryEvent implements Listener {
                                     int amount = (int) playerData.getTempData("ShopInventory_" + data + "_SelectCount", 1);
                                     shopManager.buyShopItem(player, data, amount);
                                 }
+                            } else if (e.isRightClick()) {
+                                player.sendMessage(ChatColor.GRAY + "========================================");
+                                player.sendMessage(ChatColor.GRAY + "개수를 입력해주세요.");
+                                player.sendMessage(ChatColor.GRAY + "'cancel' 입력시 취소");
+                                player.sendMessage(ChatColor.GRAY + "========================================");
+
+                                playerData.setTempData("ShopInventory_Edit_Amount", data);
+                                player.closeInventory();
                             }
                         }
                     }
@@ -123,27 +158,13 @@ public class ShopInventoryEvent implements Listener {
                             shopManager.openShopInventory(player, 0);
                         }
                         case "SellConfirm" -> {
-                            SellItemSlot[] sellItemSlots = (SellItemSlot[]) playerData.getTempData("ShopInventory_Sell_Stacks", null);
-                            if (sellItemSlots != null) {
-                                double totalPrice = 0;
-                                for (SellItemSlot sellItemSlot : sellItemSlots) {
-                                    if (sellItemSlot != null) {
-                                        totalPrice = totalPrice + sellItemSlot.getTotalPrice();
-                                    }
-                                }
-                                plugin.getEconomy().depositPlayer(player, totalPrice);
-                                playerData.setTempData("ShopInventory_Sell_Stacks", null);
-                                player.sendMessage(ChatColor.GREEN + "모든 아이템이 판매되었습니다.");
-                                shopManager.openShopInventory(player, 1);
-                            } else {
-                                player.sendMessage(ChatColor.RED + "판매할 아이템이 없습니다.");
-                            }
+                            shopManager.sellShopItem(player);
                         }
                     }
                     return;
                 }
             }
-            ItemStack sellInvCheckStack = shopInventory.getInventory().getItem(49);
+            ItemStack sellInvCheckStack = shopGui.getInventory().getItem(49);
             if (sellInvCheckStack != null && sellInvCheckStack.getType() == Material.CHEST) {
                 InventoryType inventoryType = e.getClickedInventory().getType();
                 ItemStack selectItemStack = e.getCurrentItem();
@@ -166,7 +187,7 @@ public class ShopInventoryEvent implements Listener {
                             if (emptySlot != -1) {
                                 ShopItem shopItem = shopManager.searchShopItem(selectItemStack);
                                 if (shopItem != null) {
-                                    SellItemSlot sellItemSlot = new SellItemSlot(selectItemStack, (shopItem.getPrice(true) * selectItemStack.getAmount()));
+                                    SellItemSlot sellItemSlot = new SellItemSlot(shopItem.getId(), selectItemStack, (shopItem.getPrice(true) * selectItemStack.getAmount()));
                                     sellItemSlots[emptySlot] = sellItemSlot;
 
                                     player.getInventory().setItem(clickSlot, GuiUtil.AIR_STACK);

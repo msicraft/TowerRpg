@@ -114,6 +114,14 @@ public class PlayerData {
         return tempDataMap.getOrDefault(key, null);
     }
 
+    public boolean hasTempData(String key) {
+        return tempDataMap.containsKey(key);
+    }
+
+    public void removeTempData(String key) {
+        tempDataMap.remove(key);
+    }
+
     public Object getTempData(String key, Object def) {
         Object object = getTempData(key);
         if (object == null) {

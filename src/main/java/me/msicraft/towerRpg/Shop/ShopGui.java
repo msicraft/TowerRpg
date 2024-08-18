@@ -22,26 +22,26 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopInventory extends CustomGui {
+public class ShopGui extends CustomGui {
 
-    private final Inventory inv;
+    private final Inventory gui;
 
-    public ShopInventory() {
-        this.inv = Bukkit.createInventory(this, 54, Component.text("상점"));
+    public ShopGui() {
+        this.gui = Bukkit.createInventory(this, 54, Component.text("상점"));
     }
 
     public void setShopBuyInv(Player player) {
-        inv.clear();
+        gui.clear();
 
         String dataTag = "ShopInventory_Buy";
         ItemStack itemStack;
         itemStack = GuiUtil.createItemStack(Material.ARROW, "다음 페이지", GuiUtil.EMPTY_LORE, -1, dataTag, "Next");
-        inv.setItem(48, itemStack);
+        gui.setItem(48, itemStack);
         itemStack = GuiUtil.createItemStack(Material.ARROW, "이전 페이지", GuiUtil.EMPTY_LORE, -1, dataTag, "Previous");
-        inv.setItem(50, itemStack);
+        gui.setItem(50, itemStack);
 
         itemStack = GuiUtil.createItemStack(Material.CHEST, "아이템 판매", GuiUtil.EMPTY_LORE, -1, dataTag, "Sell");
-        inv.setItem(45, itemStack);
+        gui.setItem(45, itemStack);
 
         PlayerData playerData = TowerRpg.getPlugin().getPlayerDataManager().getPlayerData(player);
         ShopManager shopManager = TowerRpg.getPlugin().getShopManager();
@@ -58,7 +58,7 @@ public class ShopInventory extends CustomGui {
 
         String pageS = "페이지: " + (page + 1) + "/" + ((maxSize / 45) + 1);
         itemStack = GuiUtil.createItemStack(Material.BOOK, pageS, GuiUtil.EMPTY_LORE, -1, dataTag, "Page");
-        inv.setItem(49, itemStack);
+        gui.setItem(49, itemStack);
 
         for (int a = lastCount; a < maxSize; a++) {
             String internalName = internalNames.get(a);
@@ -79,13 +79,13 @@ public class ShopInventory extends CustomGui {
                 lore.add(Component.text(ChatColor.YELLOW + "선택된 개수: " + selectCount));
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.YELLOW + "좌 클릭:" + ChatColor.GREEN + " 구매"));
-                lore.add(Component.text(ChatColor.YELLOW + "우 클릭:" + ChatColor.GREEN + " 구매 개수 선택"));
+                lore.add(Component.text(ChatColor.YELLOW + "우 클릭:" + ChatColor.GREEN + " 개수 입력"));
 
                 dataContainer.set(new NamespacedKey(TowerRpg.getPlugin(), dataTag), PersistentDataType.STRING, internalName);
 
                 itemMeta.lore(lore);
                 cloneStack.setItemMeta(itemMeta);
-                inv.setItem(guiCount, cloneStack);
+                gui.setItem(guiCount, cloneStack);
                 guiCount++;
                 if (guiCount >= 45) {
                     break;
@@ -95,12 +95,12 @@ public class ShopInventory extends CustomGui {
     }
 
     public void setShopSellInv(Player player) {
-        inv.clear();
+        gui.clear();
 
         String dataTag = "ShopInventory_Sell";
         ItemStack itemStack;
         itemStack = GuiUtil.createItemStack(Material.BARRIER, "뒤로", GuiUtil.EMPTY_LORE, -1, dataTag, "Back");
-        inv.setItem(45, itemStack);
+        gui.setItem(45, itemStack);
 
         PlayerData playerData = TowerRpg.getPlugin().getPlayerDataManager().getPlayerData(player);
         ShopManager shopManager = TowerRpg.getPlugin().getShopManager();
@@ -131,7 +131,7 @@ public class ShopInventory extends CustomGui {
                     itemMeta.lore(lore);
                     cloneStack.setItemMeta(itemMeta);
 
-                    inv.setItem(i, cloneStack);
+                    gui.setItem(i, cloneStack);
                     totalPrice = totalPrice + price;
                 }
             }
@@ -139,12 +139,12 @@ public class ShopInventory extends CustomGui {
         List<String> sellConfirmLore = new ArrayList<>();
         sellConfirmLore.add(ChatColor.GREEN + "총 판매 가격: " + (Math.round(totalPrice * 100.0) / 100.0));
         itemStack = GuiUtil.createItemStack(Material.CHEST, "판매 확인", sellConfirmLore, -1, dataTag, "SellConfirm");
-        inv.setItem(49, itemStack);
+        gui.setItem(49, itemStack);
     }
 
     @Override
     public @NotNull Inventory getInventory() {
-        return this.inv;
+        return this.gui;
     }
 
 }

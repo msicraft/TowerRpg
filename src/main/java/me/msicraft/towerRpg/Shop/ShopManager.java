@@ -1,5 +1,7 @@
 package me.msicraft.towerRpg.Shop;
 
+import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
+import me.msicraft.towerRpg.Shop.Data.SellItemSlot;
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
 import me.msicraft.towerRpg.Shop.File.ShopDataFile;
 import me.msicraft.towerRpg.Shop.Task.ShopTimerTask;
@@ -20,7 +22,7 @@ import java.util.Set;
 public class ShopManager {
 
     private final TowerRpg plugin;
-    private final ShopInventory shopInventory;
+    private final ShopGui shopGui;
 
     private final Map<String, ShopItem> shopItemMap = new LinkedHashMap<>();
 
@@ -37,16 +39,16 @@ public class ShopManager {
 
     public ShopManager(TowerRpg plugin) {
         this.plugin = plugin;
-        shopInventory = new ShopInventory();
+        shopGui = new ShopGui();
 
         reloadVariables();
     }
 
     public void closeShopInventory() {
-        if (shopInventory == null) {
+        if (shopGui == null) {
             return;
         }
-        List<HumanEntity> viewers = shopInventory.getInventory().getViewers();
+        List<HumanEntity> viewers = shopGui.getInventory().getViewers();
         for (int i = viewers.size() - 1; i >= 0; i--) {
             HumanEntity humanEntity = viewers.get(i);
             humanEntity.closeInventory();
@@ -92,11 +94,11 @@ public class ShopManager {
             return;
         }
         if (type == 0) {
-            player.openInventory(shopInventory.getInventory());
-            shopInventory.setShopBuyInv(player);
+            player.openInventory(shopGui.getInventory());
+            shopGui.setShopBuyInv(player);
         } else if (type == 1) {
-            player.openInventory(shopInventory.getInventory());
-            shopInventory.setShopSellInv(player);
+            player.openInventory(shopGui.getInventory());
+            shopGui.setShopSellInv(player);
         }
     }
 
@@ -171,6 +173,31 @@ public class ShopManager {
         }
     }
 
+    public void sellShopItem(Player player) {
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+        SellItemSlot[] sellItemSlots = (SellItemSlot[]) playerData.getTempData("ShopInventory_Sell_Stacks", null);
+        if (sellItemSlots != null) {
+            double totalPrice = 0;
+            for (SellItemSlot sellItemSlot : sellItemSlots) {
+                if (sellItemSlot != null) {
+                    ShopItem shopItem = getShopItem(sellItemSlot.getId());
+                    totalPrice = totalPrice + sellItemSlot.getTotalPrice();
+
+                    int amount = sellItemSlot.getItemStack().getAmount();
+                    shopItem.addStock(amount);
+                    shopItem.addSellQuantity(amount);
+                }
+            }
+            plugin.getEconomy().depositPlayer(player, totalPrice);
+            playerData.setTempData("ShopInventory_Sell_Stacks", null);
+
+            player.sendMessage(ChatColor.GREEN + "모든 아이템이 판매되었습니다.");
+            openShopInventory(player, 1);
+        } else {
+            player.sendMessage(ChatColor.RED + "판매할 아이템이 없습니다.");
+        }
+    }
+
     public ShopItem searchShopItem(ItemStack itemStack) {
         for (ShopItem shopItem : shopItemMap.values()) {
             if (shopItem.getItemStack().isSimilar(itemStack)) {
@@ -183,9 +210,13 @@ public class ShopManager {
     public boolean hasInternalName(String internalName) {
         return shopItemMap.containsKey(internalName);
     }
+
+    /*
     public ShopInventory getShopInventory() {
         return shopInventory;
     }
+
+     */
 
     public ShopItem getShopItem(String internalName) {
         return shopItemMap.getOrDefault(internalName, null);

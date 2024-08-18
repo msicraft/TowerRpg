@@ -36,7 +36,7 @@ public class MenuGui extends CustomGui {
 
         itemStack = GuiUtil.createItemStack(Material.CHEST, "상점", GuiUtil.EMPTY_LORE, -1,
                 dataTag, "ShopInventory");
-        gui.setItem(18, itemStack);
+        gui.setItem(19, itemStack);
     }
 
 
