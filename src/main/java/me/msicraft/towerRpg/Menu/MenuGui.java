@@ -1,6 +1,6 @@
 package me.msicraft.towerRpg.Menu;
 
-import me.msicraft.towerRpg.PlayerData.Data.CustomGui;
+import me.msicraft.towerRpg.Menu.Data.CustomGui;
 import me.msicraft.towerRpg.Utils.GuiUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;

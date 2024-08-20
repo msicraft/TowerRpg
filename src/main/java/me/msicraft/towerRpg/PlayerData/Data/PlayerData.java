@@ -1,19 +1,17 @@
 package me.msicraft.towerRpg.PlayerData.Data;
 
+import me.msicraft.towerRpg.Menu.Data.CustomGui;
+import me.msicraft.towerRpg.Menu.Data.GuiType;
 import me.msicraft.towerRpg.Menu.MenuGui;
 import me.msicraft.towerRpg.PlayerData.File.PlayerDataFile;
-import me.msicraft.towerRpg.Prefix.Data.Prefix;
-import me.msicraft.towerRpg.Prefix.PrefixManager;
 import me.msicraft.towerRpg.TowerRpg;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PlayerData {
 
@@ -23,6 +21,7 @@ public class PlayerData {
     private final Map<GuiType, CustomGui> customGuiMap = new HashMap<>();
 
     private final Map<String, Object> tempDataMap = new HashMap<>();
+    private final Map<String, Object> dataMap = new HashMap<>();
     private final List<String> tagList = new ArrayList<>();
 
     private final PlayerPrefix playerPrefix;
@@ -30,52 +29,38 @@ public class PlayerData {
     public PlayerData(Player player) {
         this.player = player;
         this.playerDataFile = new PlayerDataFile(player);
-        this.playerPrefix = new PlayerPrefix();
+        this.playerPrefix = new PlayerPrefix(this);
     }
 
     public void loadData() {
-        FileConfiguration config = playerDataFile.getConfig();
-        PrefixManager prefixManager = TowerRpg.getPlugin().getPrefixManager();
+        playerPrefix.loadData();
 
-        //
-        String applyPrefixId = config.getString("Prefix.ApplyPrefix");
-        Prefix prefix = prefixManager.getPrefix(applyPrefixId);
-        prefixManager.applyPrefix(player, prefix);
+        FileConfiguration playerDataConfig = playerDataFile.getConfig();
 
-        List<String> prefixList = config.getStringList("Prefix.List");
-        for (String id : prefixList) {
-            Prefix prefix1 = prefixManager.getPrefix(id);
-            if (prefix1 != null) {
-                playerPrefix.addPrefix(prefix1);
+        List<String> tags = playerDataConfig.getStringList("Tags");
+        tagList.addAll(tags);
+
+        ConfigurationSection dataSection = playerDataConfig.getConfigurationSection("Data");
+        if (dataSection!= null) {
+            Set<String> keys = dataSection.getKeys(false);
+            for (String key : keys) {
+                Object object = playerDataConfig.get("Data." + key);
+                dataMap.put(key, object);
             }
         }
-        //
-
-        List<String> tags = config.getStringList("Tags");
-        tagList.addAll(tags);
     }
 
     public void saveData() {
-        FileConfiguration config = playerDataFile.getConfig();
+        playerPrefix.saveData();
+        FileConfiguration playerDataConfig = playerDataFile.getConfig();
 
-        //
-        Prefix applyPrefix = playerPrefix.getPrefix();
-        if (applyPrefix != null) {
-            config.set("Prefix.ApplyPrefix", applyPrefix.getId());
-        } else {
-            config.set("Prefix.ApplyPrefix", null);
+        playerDataConfig.set("Tags", tagList);
+
+        Set<String> dataKeys = dataMap.keySet();
+        for (String key : dataKeys) {
+            Object value = dataMap.get(key);
+            playerDataConfig.set("Data." + key, value);
         }
-
-        List<String> prefixIdList = new ArrayList<>();
-        for (Prefix prefix : playerPrefix.getPrefixList()) {
-            prefixIdList.add(prefix.getId());
-        }
-        config.set("Prefix.List", prefixIdList);
-
-        //
-        config.set("Tags", tagList);
-
-        //
 
         playerDataFile.saveConfig();
     }
@@ -114,6 +99,14 @@ public class PlayerData {
         return tempDataMap.getOrDefault(key, null);
     }
 
+    public Object getTempData(String key, Object def) {
+        Object object = getTempData(key);
+        if (!hasTempData(key) || object == null) {
+            return def;
+        }
+        return object;
+    }
+
     public boolean hasTempData(String key) {
         return tempDataMap.containsKey(key);
     }
@@ -122,28 +115,32 @@ public class PlayerData {
         tempDataMap.remove(key);
     }
 
-    public Object getTempData(String key, Object def) {
-        Object object = getTempData(key);
-        if (object == null) {
+    public void setData(String key, Object object) {
+        dataMap.put(key, object);
+    }
+
+    public Object getData(String key) {
+        return dataMap.getOrDefault(key, null);
+    }
+
+    public Object getData(String key, Object def) {
+        Object object = getData(key);
+        if (!hasData(key) || object == null) {
             return def;
         }
         return object;
     }
 
+    public boolean hasData(String key) {
+        return dataMap.containsKey(key);
+    }
+
+    public void removeData(String key) {
+        dataMap.remove(key);
+    }
+
     public PlayerPrefix getPlayerPrefix() {
         return playerPrefix;
-    }
-
-    public boolean hasTag(String tag) {
-        return tagList.contains(tag);
-    }
-
-    public void addTag(String tag) {
-        tagList.add(tag);
-    }
-
-    public void removeTag(String tag) {
-        tagList.remove(tag);
     }
 
 }

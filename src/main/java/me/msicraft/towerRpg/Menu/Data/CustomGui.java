@@ -1,4 +1,4 @@
-package me.msicraft.towerRpg.PlayerData.Data;
+package me.msicraft.towerRpg.Menu.Data;
 
 import org.bukkit.inventory.InventoryHolder;
 

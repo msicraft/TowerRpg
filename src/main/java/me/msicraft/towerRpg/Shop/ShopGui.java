@@ -1,6 +1,6 @@
 package me.msicraft.towerRpg.Shop;
 
-import me.msicraft.towerRpg.PlayerData.Data.CustomGui;
+import me.msicraft.towerRpg.Menu.Data.CustomGui;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.Shop.Data.SellItemSlot;
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
@@ -25,8 +25,10 @@ import java.util.List;
 public class ShopGui extends CustomGui {
 
     private final Inventory gui;
+    private final TowerRpg plugin;
 
-    public ShopGui() {
+    public ShopGui(TowerRpg plugin) {
+        this.plugin = plugin;
         this.gui = Bukkit.createInventory(this, 54, Component.text("상점"));
     }
 
@@ -43,8 +45,8 @@ public class ShopGui extends CustomGui {
         itemStack = GuiUtil.createItemStack(Material.CHEST, "아이템 판매", GuiUtil.EMPTY_LORE, -1, dataTag, "Sell");
         gui.setItem(45, itemStack);
 
-        PlayerData playerData = TowerRpg.getPlugin().getPlayerDataManager().getPlayerData(player);
-        ShopManager shopManager = TowerRpg.getPlugin().getShopManager();
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+        ShopManager shopManager = plugin.getShopManager();
 
         List<String> internalNames = shopManager.getInternalNameList();
         int maxSize = internalNames.size();
@@ -81,7 +83,7 @@ public class ShopGui extends CustomGui {
                 lore.add(Component.text(ChatColor.YELLOW + "좌 클릭:" + ChatColor.GREEN + " 구매"));
                 lore.add(Component.text(ChatColor.YELLOW + "우 클릭:" + ChatColor.GREEN + " 개수 입력"));
 
-                dataContainer.set(new NamespacedKey(TowerRpg.getPlugin(), dataTag), PersistentDataType.STRING, internalName);
+                dataContainer.set(new NamespacedKey(plugin, dataTag), PersistentDataType.STRING, internalName);
 
                 itemMeta.lore(lore);
                 cloneStack.setItemMeta(itemMeta);
@@ -102,8 +104,8 @@ public class ShopGui extends CustomGui {
         itemStack = GuiUtil.createItemStack(Material.BARRIER, "뒤로", GuiUtil.EMPTY_LORE, -1, dataTag, "Back");
         gui.setItem(45, itemStack);
 
-        PlayerData playerData = TowerRpg.getPlugin().getPlayerDataManager().getPlayerData(player);
-        ShopManager shopManager = TowerRpg.getPlugin().getShopManager();
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+        ShopManager shopManager = plugin.getShopManager();
         double totalPrice = 0;
         SellItemSlot[] sellItemSlots = (SellItemSlot[]) playerData.getTempData("ShopInventory_Sell_Stacks", null);
         if (sellItemSlots != null) {
@@ -118,7 +120,7 @@ public class ShopGui extends CustomGui {
                     ItemStack cloneStack = new ItemStack(sellStack);
                     ItemMeta itemMeta = cloneStack.getItemMeta();
                     PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-                    //dataContainer.set(new NamespacedKey(TowerRpg.getPlugin(), dataTag), PersistentDataType.STRING, "Sell_ItemStack");
+                    //dataContainer.set(new NamespacedKey(plugin, dataTag), PersistentDataType.STRING, "Sell_ItemStack");
 
                     double price = 0;
                     ShopItem shopItem = shopManager.searchShopItem(cloneStack);

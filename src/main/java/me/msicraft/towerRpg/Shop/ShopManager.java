@@ -39,7 +39,7 @@ public class ShopManager {
 
     public ShopManager(TowerRpg plugin) {
         this.plugin = plugin;
-        shopGui = new ShopGui();
+        shopGui = new ShopGui(plugin);
 
         reloadVariables();
     }
