@@ -1,4 +1,4 @@
-package me.msicraft.towerRpg.CustomEvent;
+package me.msicraft.towerRpg.API.CustomEvent;
 
 import me.msicraft.towerRpg.Prefix.Data.Prefix;
 import org.bukkit.entity.Player;

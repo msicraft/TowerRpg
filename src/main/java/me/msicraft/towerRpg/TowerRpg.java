@@ -2,6 +2,7 @@ package me.msicraft.towerRpg;
 
 import me.msicraft.towerRpg.Command.MainCommand;
 import me.msicraft.towerRpg.Command.MainTabCompleter;
+import me.msicraft.towerRpg.Dungeon.Event.DungeonMenuEvent;
 import me.msicraft.towerRpg.Event.EntityRelatedEvent;
 import me.msicraft.towerRpg.Menu.Event.MenuGuiEvent;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
@@ -86,6 +87,7 @@ public final class TowerRpg extends JavaPlugin {
         pluginManager.registerEvents(new MenuGuiEvent( this), this);
         pluginManager.registerEvents(new ShopInventoryEvent(this), this);
         pluginManager.registerEvents(EntityRelatedEvent.getInstance(), this);
+        pluginManager.registerEvents(new DungeonMenuEvent(this), this);
     }
 
     public void registeredCommands() {

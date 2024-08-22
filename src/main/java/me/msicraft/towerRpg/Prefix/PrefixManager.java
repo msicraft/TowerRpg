@@ -4,7 +4,7 @@ import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.api.stat.StatMap;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.modifier.ModifierType;
-import me.msicraft.towerRpg.CustomEvent.PrefixChangeEvent;
+import me.msicraft.towerRpg.API.CustomEvent.PrefixChangeEvent;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.Prefix.Data.Prefix;
 import me.msicraft.towerRpg.Prefix.Data.StatValueType;

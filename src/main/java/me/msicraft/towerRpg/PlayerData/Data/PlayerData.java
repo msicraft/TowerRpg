@@ -143,4 +143,16 @@ public class PlayerData {
         return playerPrefix;
     }
 
+    public boolean hasTag(String key) {
+        return tagList.contains(key);
+    }
+
+    public void addTag(String key) {
+        tagList.add(key);
+    }
+
+    public void removeTag(String key) {
+        tagList.remove(key);
+    }
+
 }
