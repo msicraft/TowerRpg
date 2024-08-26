@@ -1,4 +1,4 @@
-package me.msicraft.towerRpg.Data;
+package me.msicraft.towerRpg.API.Data;
 
 public class Pair<V1, V2> {
 

@@ -1,5 +1,6 @@
 package me.msicraft.towerRpg.Party;
 
+import me.msicraft.towerRpg.Party.Data.Party;
 import me.msicraft.towerRpg.TowerRpg;
 
 import java.util.HashMap;
