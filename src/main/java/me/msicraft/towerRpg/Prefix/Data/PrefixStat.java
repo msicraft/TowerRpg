@@ -1,14 +1,12 @@
-package me.msicraft.towerRpg.Prefix;
-
-import me.msicraft.towerRpg.Prefix.Data.StatValueType;
+package me.msicraft.towerRpg.Prefix.Data;
 
 public class PrefixStat {
 
     private final String statName;
-    private final StatValueType statValueType;
+    private final Prefix.StatValueType statValueType;
     private final double value;
 
-    public PrefixStat(String statName, StatValueType statValueType, double value) {
+    public PrefixStat(String statName, Prefix.StatValueType statValueType, double value) {
         this.statName = statName;
         this.statValueType = statValueType;
         this.value = value;
@@ -22,7 +20,7 @@ public class PrefixStat {
         return value;
     }
 
-    public StatValueType getStatValueType() {
+    public Prefix.StatValueType getStatValueType() {
         return statValueType;
     }
 

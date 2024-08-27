@@ -81,6 +81,7 @@ public class Party {
         MAX_PLAYER("최대 플레이어", 4),
         FRIENDLY_FIRE("아군 오사", false),
         PARTY_TYPE("공개 여부", true),
+        USE_PASSWORD("비밀번호 사용", false),
         PASSWORD("비밀번호", "12345");
 
         private final String displayName;

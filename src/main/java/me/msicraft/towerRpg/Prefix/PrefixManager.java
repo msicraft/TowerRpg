@@ -7,7 +7,7 @@ import io.lumine.mythic.lib.player.modifier.ModifierType;
 import me.msicraft.towerRpg.API.CustomEvent.PrefixChangeEvent;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.Prefix.Data.Prefix;
-import me.msicraft.towerRpg.Prefix.Data.StatValueType;
+import me.msicraft.towerRpg.Prefix.Data.PrefixStat;
 import me.msicraft.towerRpg.Prefix.File.PrefixDataFile;
 import me.msicraft.towerRpg.TowerRpg;
 import org.bukkit.Bukkit;
@@ -71,7 +71,7 @@ public class PrefixManager {
             Set<PrefixStat> statSet = prefix.getStats();
             for (PrefixStat stat : statSet) {
                 ModifierType modifierType = ModifierType.FLAT;
-                if (stat.getStatValueType() == StatValueType.MULTIPLY) {
+                if (stat.getStatValueType() == Prefix.StatValueType.MULTIPLY) {
                     modifierType = ModifierType.RELATIVE;
                 }
                 StatModifier statModifier = new StatModifier(PREFIX_KEY, stat.getStatName().toUpperCase(), stat.getValue(), modifierType);

@@ -1,7 +1,6 @@
 package me.msicraft.towerRpg.Prefix.Data;
 
 import me.msicraft.towerRpg.Prefix.File.PrefixDataFile;
-import me.msicraft.towerRpg.Prefix.PrefixStat;
 import org.bukkit.ChatColor;
 
 import java.util.HashSet;
@@ -63,6 +62,10 @@ public class Prefix {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public enum StatValueType {
+        FLAT, MULTIPLY
     }
 
 }
