@@ -8,7 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Set;
 
-public class ShopTimerTask extends BukkitRunnable {
+public class ShopTask extends BukkitRunnable {
 
     private final TowerRpg plugin;
     private final ShopManager shopManager;
@@ -17,7 +17,7 @@ public class ShopTimerTask extends BukkitRunnable {
 
     private int ticks = 0;
 
-    public ShopTimerTask(TowerRpg plugin, ShopManager shopManager, int totalTicks) {
+    public ShopTask(TowerRpg plugin, ShopManager shopManager, int totalTicks) {
         this.plugin = plugin;
         this.shopManager = shopManager;
         this.totalTicks = totalTicks;

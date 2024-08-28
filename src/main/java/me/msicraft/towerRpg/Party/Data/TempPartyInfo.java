@@ -2,7 +2,10 @@ package me.msicraft.towerRpg.Party.Data;
 
 import me.msicraft.towerRpg.API.Data.Pair;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class TempPartyInfo {
 

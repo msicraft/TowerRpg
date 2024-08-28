@@ -2,12 +2,8 @@ package me.msicraft.towerRpg.API.CustomEvent;
 
 import me.msicraft.towerRpg.Prefix.Data.Prefix;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
-public class PrefixChangeEvent extends Event {
-
-    private final static HandlerList handlers = new HandlerList();
+public class PrefixChangeEvent extends TowerRpgEvent {
 
     private final Player player;
     private final Prefix prefix;
@@ -23,15 +19,6 @@ public class PrefixChangeEvent extends Event {
 
     public Prefix getPrefix() {
         return prefix;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 
 }

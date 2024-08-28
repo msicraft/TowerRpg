@@ -1,7 +1,7 @@
 package me.msicraft.towerRpg.Dungeon.Menu;
 
+import me.msicraft.towerRpg.API.Data.CustomGui;
 import me.msicraft.towerRpg.Dungeon.Data.DungeonType;
-import me.msicraft.towerRpg.Menu.Data.CustomGui;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.TowerRpg;
 import me.msicraft.towerRpg.Utils.GuiUtil;

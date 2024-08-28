@@ -1,9 +1,10 @@
-package me.msicraft.towerRpg.Shop;
+package me.msicraft.towerRpg.Shop.Menu;
 
-import me.msicraft.towerRpg.Menu.Data.CustomGui;
+import me.msicraft.towerRpg.API.Data.CustomGui;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.Shop.Data.SellItemSlot;
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
+import me.msicraft.towerRpg.Shop.ShopManager;
 import me.msicraft.towerRpg.TowerRpg;
 import me.msicraft.towerRpg.Utils.GuiUtil;
 import net.kyori.adventure.text.Component;
@@ -30,19 +31,25 @@ public class ShopGui extends CustomGui {
     public ShopGui(TowerRpg plugin) {
         this.plugin = plugin;
         this.gui = Bukkit.createInventory(this, 54, Component.text("상점"));
+
+        this.shopItemBuyKey = new NamespacedKey(plugin, "ShopInventory_Buy");
+        this.shopItemSellKey = new NamespacedKey(plugin, "ShopInventory_Sell");
     }
+
+    private final NamespacedKey shopItemBuyKey;
+    private final NamespacedKey shopItemSellKey;
 
     public void setShopBuyInv(Player player) {
         gui.clear();
 
-        String dataTag = "ShopInventory_Buy";
+        //String dataKey = "ShopInventory_Buy";
         ItemStack itemStack;
-        itemStack = GuiUtil.createItemStack(Material.ARROW, "다음 페이지", GuiUtil.EMPTY_LORE, -1, dataTag, "Next");
+        itemStack = GuiUtil.createItemStack(Material.ARROW, "다음 페이지", GuiUtil.EMPTY_LORE, -1, shopItemBuyKey, "Next");
         gui.setItem(48, itemStack);
-        itemStack = GuiUtil.createItemStack(Material.ARROW, "이전 페이지", GuiUtil.EMPTY_LORE, -1, dataTag, "Previous");
+        itemStack = GuiUtil.createItemStack(Material.ARROW, "이전 페이지", GuiUtil.EMPTY_LORE, -1, shopItemBuyKey, "Previous");
         gui.setItem(50, itemStack);
 
-        itemStack = GuiUtil.createItemStack(Material.CHEST, "아이템 판매", GuiUtil.EMPTY_LORE, -1, dataTag, "Sell");
+        itemStack = GuiUtil.createItemStack(Material.CHEST, "아이템 판매", GuiUtil.EMPTY_LORE, -1, shopItemBuyKey, "Sell");
         gui.setItem(45, itemStack);
 
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
@@ -59,7 +66,7 @@ public class ShopGui extends CustomGui {
         int lastCount = page * 45;
 
         String pageS = "페이지: " + (page + 1) + "/" + ((maxSize / 45) + 1);
-        itemStack = GuiUtil.createItemStack(Material.BOOK, pageS, GuiUtil.EMPTY_LORE, -1, dataTag, "Page");
+        itemStack = GuiUtil.createItemStack(Material.BOOK, pageS, GuiUtil.EMPTY_LORE, -1, shopItemBuyKey, "Page");
         gui.setItem(49, itemStack);
 
         for (int a = lastCount; a < maxSize; a++) {
@@ -83,7 +90,7 @@ public class ShopGui extends CustomGui {
                 lore.add(Component.text(ChatColor.YELLOW + "좌 클릭:" + ChatColor.GREEN + " 구매"));
                 lore.add(Component.text(ChatColor.YELLOW + "우 클릭:" + ChatColor.GREEN + " 개수 입력"));
 
-                dataContainer.set(new NamespacedKey(plugin, dataTag), PersistentDataType.STRING, internalName);
+                dataContainer.set(shopItemBuyKey, PersistentDataType.STRING, internalName);
 
                 itemMeta.lore(lore);
                 cloneStack.setItemMeta(itemMeta);
@@ -99,9 +106,9 @@ public class ShopGui extends CustomGui {
     public void setShopSellInv(Player player) {
         gui.clear();
 
-        String dataTag = "ShopInventory_Sell";
+        //String dataTag = "ShopInventory_Sell";
         ItemStack itemStack;
-        itemStack = GuiUtil.createItemStack(Material.BARRIER, "뒤로", GuiUtil.EMPTY_LORE, -1, dataTag, "Back");
+        itemStack = GuiUtil.createItemStack(Material.BARRIER, "뒤로", GuiUtil.EMPTY_LORE, -1, shopItemSellKey, "Back");
         gui.setItem(45, itemStack);
 
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
@@ -140,8 +147,16 @@ public class ShopGui extends CustomGui {
         }
         List<String> sellConfirmLore = new ArrayList<>();
         sellConfirmLore.add(ChatColor.GREEN + "총 판매 가격: " + (Math.round(totalPrice * 100.0) / 100.0));
-        itemStack = GuiUtil.createItemStack(Material.CHEST, "판매 확인", sellConfirmLore, -1, dataTag, "SellConfirm");
+        itemStack = GuiUtil.createItemStack(Material.CHEST, "판매 확인", sellConfirmLore, -1, shopItemSellKey, "SellConfirm");
         gui.setItem(49, itemStack);
+    }
+
+    public NamespacedKey getShopItemBuyKey() {
+        return shopItemBuyKey;
+    }
+
+    public NamespacedKey getShopItemSellKey() {
+        return shopItemSellKey;
     }
 
     @Override

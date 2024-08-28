@@ -1,10 +1,7 @@
-package me.msicraft.towerRpg.Dungeon.Event;
+package me.msicraft.towerRpg.Dungeon.Menu.Event;
 
-import me.msicraft.towerRpg.Dungeon.DungeonManager;
 import me.msicraft.towerRpg.Dungeon.Menu.DungeonGui;
-import me.msicraft.towerRpg.Shop.ShopGui;
 import me.msicraft.towerRpg.TowerRpg;
-import net.playavalon.mythicdungeons.MythicDungeons;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

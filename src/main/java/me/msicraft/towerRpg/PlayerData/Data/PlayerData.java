@@ -1,7 +1,7 @@
 package me.msicraft.towerRpg.PlayerData.Data;
 
-import me.msicraft.towerRpg.Menu.Data.CustomGui;
-import me.msicraft.towerRpg.Menu.Data.GuiType;
+import me.msicraft.towerRpg.API.Data.CustomGui;
+import me.msicraft.towerRpg.Menu.GuiType;
 import me.msicraft.towerRpg.Menu.MenuGui;
 import me.msicraft.towerRpg.PlayerData.File.PlayerDataFile;
 import me.msicraft.towerRpg.TowerRpg;

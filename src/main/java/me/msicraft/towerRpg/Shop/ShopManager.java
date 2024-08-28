@@ -4,7 +4,8 @@ import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.Shop.Data.SellItemSlot;
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
 import me.msicraft.towerRpg.Shop.File.ShopDataFile;
-import me.msicraft.towerRpg.Shop.Task.ShopTimerTask;
+import me.msicraft.towerRpg.Shop.Menu.ShopGui;
+import me.msicraft.towerRpg.Shop.Task.ShopTask;
 import me.msicraft.towerRpg.TowerRpg;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,7 +36,7 @@ public class ShopManager {
     private double sellPriceChangePercent = 0.1;
 
     private boolean isShopMaintenance = false;
-    private ShopTimerTask shopTimerTask = null;
+    private ShopTask shopTask = null;
 
     public ShopManager(TowerRpg plugin) {
         this.plugin = plugin;
@@ -75,12 +76,12 @@ public class ShopManager {
 
         loadShopData();
 
-        if (shopTimerTask != null) {
-            shopTimerTask.cancel();
-            shopTimerTask = null;
+        if (shopTask != null) {
+            shopTask.cancel();
+            shopTask = null;
             setShopMaintenance(false);
         }
-        shopTimerTask = new ShopTimerTask(plugin, this, updateTicks);
+        shopTask = new ShopTask(plugin, this, updateTicks);
     }
 
     public void sendMaintenanceMessage(Player player) {

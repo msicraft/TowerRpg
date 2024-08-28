@@ -12,20 +12,20 @@ public class Party {
     private final Set<UUID> members = new HashSet<>();
     private final Map<PartyOptions, Object> optionMap = new HashMap<>();
 
-    private Party(UUID id, UUID leader) {
-        this.id = id;
-        this.leader = leader;
+    public Party(Player player) {
+        this.id = UUID.randomUUID();
+        this.leader = player.getUniqueId();
         for (PartyOptions option : PartyOptions.values()) {
             optionMap.put(option, option.getBaseValue());
         }
     }
 
-    public static Party createParty(UUID leader) {
-        return new Party(UUID.randomUUID(), leader);
-    }
-
-    public static Party createParty(Player leader) {
-        return createParty(leader.getUniqueId());
+    public Party(UUID leader) {
+        this.id = UUID.randomUUID();
+        this.leader = leader;
+        for (PartyOptions option : PartyOptions.values()) {
+            optionMap.put(option, option.getBaseValue());
+        }
     }
 
     public Object getPartyOptionValue(PartyOptions option) {

@@ -2,7 +2,7 @@ package me.msicraft.towerRpg;
 
 import me.msicraft.towerRpg.Command.MainCommand;
 import me.msicraft.towerRpg.Command.MainTabCompleter;
-import me.msicraft.towerRpg.Dungeon.Event.DungeonMenuEvent;
+import me.msicraft.towerRpg.Dungeon.Menu.Event.DungeonMenuEvent;
 import me.msicraft.towerRpg.Event.EntityRelatedEvent;
 import me.msicraft.towerRpg.Menu.Event.MenuGuiEvent;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
@@ -11,8 +11,8 @@ import me.msicraft.towerRpg.PlayerData.PlayerDataManager;
 import me.msicraft.towerRpg.Prefix.Data.Prefix;
 import me.msicraft.towerRpg.Prefix.File.PrefixDataFile;
 import me.msicraft.towerRpg.Prefix.PrefixManager;
-import me.msicraft.towerRpg.Shop.Event.ShopInventoryEvent;
 import me.msicraft.towerRpg.Shop.File.ShopDataFile;
+import me.msicraft.towerRpg.Shop.Menu.Event.ShopMenuEvent;
 import me.msicraft.towerRpg.Shop.ShopManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -85,7 +85,7 @@ public final class TowerRpg extends JavaPlugin {
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerDataRelatedEvent(this), this);
         pluginManager.registerEvents(new MenuGuiEvent( this), this);
-        pluginManager.registerEvents(new ShopInventoryEvent(this), this);
+        pluginManager.registerEvents(new ShopMenuEvent(this), this);
         pluginManager.registerEvents(EntityRelatedEvent.getInstance(), this);
         pluginManager.registerEvents(new DungeonMenuEvent(this), this);
     }

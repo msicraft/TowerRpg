@@ -1,10 +1,10 @@
-package me.msicraft.towerRpg.Shop.Event;
+package me.msicraft.towerRpg.Shop.Menu.Event;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.Shop.Data.SellItemSlot;
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
-import me.msicraft.towerRpg.Shop.ShopGui;
+import me.msicraft.towerRpg.Shop.Menu.ShopGui;
 import me.msicraft.towerRpg.Shop.ShopManager;
 import me.msicraft.towerRpg.TowerRpg;
 import me.msicraft.towerRpg.Utils.GuiUtil;
@@ -26,11 +26,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-public class ShopInventoryEvent implements Listener {
+public class ShopMenuEvent implements Listener {
 
     private final TowerRpg plugin;
 
-    public ShopInventoryEvent(TowerRpg plugin) {
+    public ShopMenuEvent(TowerRpg plugin) {
         this.plugin = plugin;
     }
 
