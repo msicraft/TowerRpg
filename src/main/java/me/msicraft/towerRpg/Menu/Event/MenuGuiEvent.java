@@ -3,6 +3,8 @@ package me.msicraft.towerRpg.Menu.Event;
 import me.msicraft.towerRpg.API.Data.CustomGui;
 import me.msicraft.towerRpg.Menu.GuiType;
 import me.msicraft.towerRpg.Menu.MenuGui;
+import me.msicraft.towerRpg.Party.Menu.PartyGui;
+import me.msicraft.towerRpg.Party.PartyManager;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.PlayerData.PlayerDataManager;
 import me.msicraft.towerRpg.TowerRpg;
@@ -76,6 +78,13 @@ public class MenuGuiEvent implements Listener {
                                 }
                                 case "ShopInventory" -> {
                                     plugin.getShopManager().openShopInventory(player, 0);
+                                }
+                                case "Party" -> {
+                                    PartyManager partyManager = plugin.getPartyManager();
+                                    if (e.isLeftClick()) {
+                                        partyManager.openPartyInventory(player, 0);
+                                    } else if (e.isRightClick()) {
+                                    }
                                 }
                             }
                         }

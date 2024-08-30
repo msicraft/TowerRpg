@@ -23,6 +23,9 @@ public class ShopTask extends BukkitRunnable {
         this.totalTicks = totalTicks;
 
         this.maintenanceTicks = totalTicks - (20 * 60);
+        if (maintenanceTicks < 0) {
+            this.maintenanceTicks = (int) (totalTicks - (totalTicks * 0.1));
+        }
 
         this.runTaskTimerAsynchronously(plugin, 0, 20);
     }
@@ -32,8 +35,10 @@ public class ShopTask extends BukkitRunnable {
         ticks++;
         if (maintenanceTicks != -1 && ticks >= maintenanceTicks) {
             maintenanceTicks = -1;
-            shopManager.setShopMaintenance(true);
-            Bukkit.getScheduler().runTask(plugin, shopManager::closeShopInventory);
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                shopManager.setShopMaintenance(true);
+                shopManager.closeShopInventory();
+            });
             return;
         }
 

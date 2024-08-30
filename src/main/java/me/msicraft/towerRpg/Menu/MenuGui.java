@@ -4,11 +4,15 @@ import me.msicraft.towerRpg.API.Data.CustomGui;
 import me.msicraft.towerRpg.Utils.GuiUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class MenuGui extends CustomGui {
 
@@ -37,6 +41,10 @@ public class MenuGui extends CustomGui {
         itemStack = GuiUtil.createItemStack(Material.CHEST, "상점", GuiUtil.EMPTY_LORE, -1,
                 dataTag, "ShopInventory");
         gui.setItem(19, itemStack);
+        itemStack = GuiUtil.createItemStack(Material.PLAYER_HEAD, "파티",
+                List.of(ChatColor.YELLOW + "좌 클릭: 피티 찾기", ChatColor.YELLOW + "우 클릭: 파티 정보"), -1,
+                dataTag, "Party");
+        gui.setItem(20, itemStack);
     }
 
 

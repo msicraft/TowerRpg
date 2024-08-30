@@ -79,6 +79,9 @@ public class ShopMenuEvent implements Listener {
                 }
             }
             playerData.getTempData("ShopInventory_Sell_Stacks", null);
+
+            ShopManager shopManager = plugin.getShopManager();
+            shopManager.removeViewer(player);
         }
     }
 

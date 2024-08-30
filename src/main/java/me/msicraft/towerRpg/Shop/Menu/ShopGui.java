@@ -39,9 +39,21 @@ public class ShopGui extends CustomGui {
     private final NamespacedKey shopItemBuyKey;
     private final NamespacedKey shopItemSellKey;
 
-    public void setShopBuyInv(Player player) {
+    public void setGui(Player player, int type) { // 0 = 기본, 1 = 판매
         gui.clear();
+        switch (type) {
+            case 0 -> {
+                player.openInventory(getInventory());
+                setShopBuyInv(player);
+            }
+            case 1 -> {
+                player.openInventory(getInventory());
+                setShopSellInv(player);
+            }
+        }
+    }
 
+    public void setShopBuyInv(Player player) {
         //String dataKey = "ShopInventory_Buy";
         ItemStack itemStack;
         itemStack = GuiUtil.createItemStack(Material.ARROW, "다음 페이지", GuiUtil.EMPTY_LORE, -1, shopItemBuyKey, "Next");
@@ -104,8 +116,6 @@ public class ShopGui extends CustomGui {
     }
 
     public void setShopSellInv(Player player) {
-        gui.clear();
-
         //String dataTag = "ShopInventory_Sell";
         ItemStack itemStack;
         itemStack = GuiUtil.createItemStack(Material.BARRIER, "뒤로", GuiUtil.EMPTY_LORE, -1, shopItemSellKey, "Back");

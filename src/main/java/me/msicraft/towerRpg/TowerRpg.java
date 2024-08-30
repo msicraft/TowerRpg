@@ -2,9 +2,11 @@ package me.msicraft.towerRpg;
 
 import me.msicraft.towerRpg.Command.MainCommand;
 import me.msicraft.towerRpg.Command.MainTabCompleter;
+import me.msicraft.towerRpg.Dungeon.DungeonManager;
 import me.msicraft.towerRpg.Dungeon.Menu.Event.DungeonMenuEvent;
 import me.msicraft.towerRpg.Event.EntityRelatedEvent;
 import me.msicraft.towerRpg.Menu.Event.MenuGuiEvent;
+import me.msicraft.towerRpg.Party.PartyManager;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.PlayerData.Event.PlayerDataRelatedEvent;
 import me.msicraft.towerRpg.PlayerData.PlayerDataManager;
@@ -44,6 +46,8 @@ public final class TowerRpg extends JavaPlugin {
     private PlayerDataManager playerDataManager;
     private PrefixManager prefixManager;
     private ShopManager shopManager;
+    private DungeonManager dungeonManager;
+    private PartyManager partyManager;
 
     private PrefixDataFile prefixDataFile;
     private ShopDataFile shopDataFile;
@@ -59,6 +63,8 @@ public final class TowerRpg extends JavaPlugin {
         this.playerDataManager = new PlayerDataManager(this);
         this.prefixManager = new PrefixManager(this);
         this.shopManager = new ShopManager(this);
+        this.dungeonManager = new DungeonManager(this);
+        this.partyManager = new PartyManager(this);
 
         if (!setupEconomy() ) {
             getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
@@ -155,6 +161,14 @@ public final class TowerRpg extends JavaPlugin {
 
     public ShopManager getShopManager() {
         return shopManager;
+    }
+
+    public DungeonManager getDungeonManager() {
+        return dungeonManager;
+    }
+
+    public PartyManager getPartyManager() {
+        return partyManager;
     }
 
     public PrefixDataFile getPrefixDataFile() {

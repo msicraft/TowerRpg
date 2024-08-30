@@ -3,7 +3,9 @@ package me.msicraft.towerRpg.PlayerData.Data;
 import me.msicraft.towerRpg.API.Data.CustomGui;
 import me.msicraft.towerRpg.Menu.GuiType;
 import me.msicraft.towerRpg.Menu.MenuGui;
+import me.msicraft.towerRpg.Party.Menu.PartyGui;
 import me.msicraft.towerRpg.PlayerData.File.PlayerDataFile;
+import me.msicraft.towerRpg.Shop.Menu.ShopGui;
 import me.msicraft.towerRpg.TowerRpg;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -79,6 +81,14 @@ public class PlayerData {
             switch (guiType) {
                 case MAIN -> {
                     customGui = new MenuGui();
+                    customGuiMap.put(guiType, customGui);
+                }
+                case SHOP -> {
+                    customGui = new ShopGui(TowerRpg.getPlugin());
+                    customGuiMap.put(guiType, customGui);
+                }
+                case PARTY -> {
+                    customGui = new PartyGui(TowerRpg.getPlugin());
                     customGuiMap.put(guiType, customGui);
                 }
                 default -> {

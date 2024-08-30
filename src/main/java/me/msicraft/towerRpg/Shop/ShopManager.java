@@ -1,6 +1,9 @@
 package me.msicraft.towerRpg.Shop;
 
+import me.msicraft.towerRpg.API.Data.CustomGuiManager;
+import me.msicraft.towerRpg.Menu.GuiType;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
+import me.msicraft.towerRpg.PlayerData.PlayerDataManager;
 import me.msicraft.towerRpg.Shop.Data.SellItemSlot;
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
 import me.msicraft.towerRpg.Shop.File.ShopDataFile;
@@ -15,15 +18,11 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class ShopManager {
+public class ShopManager extends CustomGuiManager {
 
     private final TowerRpg plugin;
-    private final ShopGui shopGui;
 
     private final Map<String, ShopItem> shopItemMap = new LinkedHashMap<>();
 
@@ -40,21 +39,18 @@ public class ShopManager {
 
     public ShopManager(TowerRpg plugin) {
         this.plugin = plugin;
-        shopGui = new ShopGui(plugin);
-
         reloadVariables();
     }
 
     public void closeShopInventory() {
-        if (shopGui == null) {
-            return;
+        for (UUID uuid : getViewers()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                player.closeInventory();
+                player.sendMessage(ChatColor.RED + "현재 상점 가격 조정 중입니다. 잠시 후 이용해 주시기를 바랍니다.");
+            }
         }
-        List<HumanEntity> viewers = shopGui.getInventory().getViewers();
-        for (int i = viewers.size() - 1; i >= 0; i--) {
-            HumanEntity humanEntity = viewers.get(i);
-            humanEntity.closeInventory();
-            humanEntity.sendMessage(ChatColor.RED + "현재 상점 가격 조정 중입니다. 잠시 후 이용해 주시기를 바랍니다.");
-        }
+        removeAll();
     }
 
     public void reloadVariables() {
@@ -94,13 +90,11 @@ public class ShopManager {
             sendMaintenanceMessage(player);
             return;
         }
-        if (type == 0) {
-            player.openInventory(shopGui.getInventory());
-            shopGui.setShopBuyInv(player);
-        } else if (type == 1) {
-            player.openInventory(shopGui.getInventory());
-            shopGui.setShopSellInv(player);
-        }
+        addViewer(player);
+
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+        ShopGui shopGui = (ShopGui) playerData.getCustomGui(GuiType.SHOP);
+        shopGui.setGui(player, type);
     }
 
     public void saveShopData() {
@@ -211,13 +205,6 @@ public class ShopManager {
     public boolean hasInternalName(String internalName) {
         return shopItemMap.containsKey(internalName);
     }
-
-    /*
-    public ShopInventory getShopInventory() {
-        return shopInventory;
-    }
-
-     */
 
     public ShopItem getShopItem(String internalName) {
         return shopItemMap.getOrDefault(internalName, null);
