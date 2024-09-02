@@ -3,7 +3,6 @@ package me.msicraft.towerRpg.Shop;
 import me.msicraft.towerRpg.API.Data.CustomGuiManager;
 import me.msicraft.towerRpg.Menu.GuiType;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
-import me.msicraft.towerRpg.PlayerData.PlayerDataManager;
 import me.msicraft.towerRpg.Shop.Data.SellItemSlot;
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
 import me.msicraft.towerRpg.Shop.File.ShopDataFile;
@@ -14,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

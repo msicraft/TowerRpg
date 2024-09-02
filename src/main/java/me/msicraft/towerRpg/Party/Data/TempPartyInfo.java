@@ -28,8 +28,7 @@ public class TempPartyInfo {
     public Set<Pair<Party.PartyOptions, Object>> getPartyOptionValueList() {
         Set<Pair<Party.PartyOptions, Object>> pairSet = new HashSet<>();
         for (Party.PartyOptions option : partyOptionsMap.keySet()) {
-            Pair<Party.PartyOptions, Object> pair = new Pair<>(option, partyOptionsMap.get(option));
-            pairSet.add(pair);
+            pairSet.add(new Pair<>(option, partyOptionsMap.get(option)));
         }
         return pairSet;
     }

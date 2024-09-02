@@ -3,7 +3,6 @@ package me.msicraft.towerRpg.Menu.Event;
 import me.msicraft.towerRpg.API.Data.CustomGui;
 import me.msicraft.towerRpg.Menu.GuiType;
 import me.msicraft.towerRpg.Menu.MenuGui;
-import me.msicraft.towerRpg.Party.Menu.PartyGui;
 import me.msicraft.towerRpg.Party.PartyManager;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.PlayerData.PlayerDataManager;

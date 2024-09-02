@@ -1,6 +1,7 @@
 package me.msicraft.towerRpg.Party.Menu;
 
 import me.msicraft.towerRpg.API.Data.CustomGui;
+import me.msicraft.towerRpg.Party.PartyManager;
 import me.msicraft.towerRpg.TowerRpg;
 import me.msicraft.towerRpg.Utils.GuiUtil;
 import net.kyori.adventure.text.Component;
@@ -56,6 +57,8 @@ public class PartyGui extends CustomGui {
         itemStack = GuiUtil.createItemStack(Material.ARROW, "이전 페이지", GuiUtil.EMPTY_LORE, -1,
                 searchPartyKey, "Previous");
         gui.setItem(50, itemStack);
+
+        PartyManager partyManager = plugin.getPartyManager();
     }
 
     private void setCreateParty(Player player) {

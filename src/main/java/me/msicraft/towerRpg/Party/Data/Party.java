@@ -1,78 +1,82 @@
 package me.msicraft.towerRpg.Party.Data;
 
+import me.msicraft.towerRpg.TowerRpg;
+import net.playavalon.mythicdungeons.api.party.IDungeonParty;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class Party {
+public class Party implements IDungeonParty {
 
-    private final UUID id;
+    private final UUID partyID;
 
     private UUID leader;
-    private final Set<UUID> members = new HashSet<>();
+    private final List<UUID> members = new ArrayList<>();
     private final Map<PartyOptions, Object> optionMap = new HashMap<>();
 
     public Party(Player player) {
-        this.id = UUID.randomUUID();
+        this.partyID = UUID.randomUUID();
         this.leader = player.getUniqueId();
         for (PartyOptions option : PartyOptions.values()) {
             optionMap.put(option, option.getBaseValue());
         }
+        initDungeonParty(TowerRpg.getPlugin());
     }
 
     public Party(UUID leader) {
-        this.id = UUID.randomUUID();
+        this.partyID = UUID.randomUUID();
         this.leader = leader;
         for (PartyOptions option : PartyOptions.values()) {
             optionMap.put(option, option.getBaseValue());
         }
+        initDungeonParty(TowerRpg.getPlugin());
     }
 
     public Object getPartyOptionValue(PartyOptions option) {
         return optionMap.getOrDefault(option, option.getBaseValue());
     }
 
-    public UUID getId() {
-        return id;
+    @Override
+    public void addPlayer(Player player) {
+        members.add(player.getUniqueId());
     }
 
-    public UUID getLeader() {
-        return leader;
+    @Override
+    public void removePlayer(Player player) {
+        members.remove(player.getUniqueId());
     }
 
-    public void setLeader(Player player) {
-        setLeader(player.getUniqueId());
+    @Override
+    public List<Player> getPlayers() {
+        List<Player> players = new ArrayList<>();
+        for (UUID uuid : members) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) {
+                continue;
+            }
+            players.add(player);
+        }
+        return players;
+
+    }
+
+    @Override
+    public @NotNull OfflinePlayer getLeader() {
+        return Bukkit.getOfflinePlayer(leader);
+    }
+
+    public UUID getPartyID() {
+        return partyID;
     }
 
     public void setLeader(UUID leader) {
         this.leader = leader;
     }
 
-    public void addPlayer(Player player) {
-        addPlayer(player.getUniqueId());
-    }
-
-    public void addPlayer(UUID uuid) {
-        members.add(uuid);
-    }
-
-    public void removePlayer(Player player) {
-        removePlayer(player.getUniqueId());
-    }
-
-    public void removePlayer(UUID uuid) {
-        members.remove(uuid);
-    }
-
-    public boolean isPartyMember(Player player) {
-        return isPartyMember(player.getUniqueId());
-    }
-
-    public boolean isPartyMember(UUID uuid) {
-        return members.contains(uuid);
-    }
-
-    public Set<UUID> getMemberUUIDs() {
+    public List<UUID> getMembers() {
         return members;
     }
 
