@@ -34,9 +34,6 @@ public class ShopMenuEvent implements Listener {
         this.plugin = plugin;
     }
 
-    private final NamespacedKey buyKey = new NamespacedKey(TowerRpg.getPlugin(), "ShopInventory_Buy");
-    private final NamespacedKey sellKey = new NamespacedKey(TowerRpg.getPlugin(), "ShopInventory_Sell");
-
     @EventHandler
     public void shopInventoryChatEdit(AsyncChatEvent e) {
         Player player = e.getPlayer();
@@ -108,6 +105,8 @@ public class ShopMenuEvent implements Listener {
             PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
             ShopManager shopManager = plugin.getShopManager();
             PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+            NamespacedKey buyKey = shopGui.getShopItemBuyKey();
+            NamespacedKey sellKey = shopGui.getShopItemSellKey();
             if (dataContainer.has(buyKey)) {
                 String data = dataContainer.get(buyKey, PersistentDataType.STRING);
                 if (data != null) {

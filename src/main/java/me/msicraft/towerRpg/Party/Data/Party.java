@@ -1,5 +1,6 @@
 package me.msicraft.towerRpg.Party.Data;
 
+import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.TowerRpg;
 import net.playavalon.mythicdungeons.api.party.IDungeonParty;
 import org.bukkit.Bukkit;
@@ -42,11 +43,17 @@ public class Party implements IDungeonParty {
     @Override
     public void addPlayer(Player player) {
         members.add(player.getUniqueId());
+
+        PlayerData playerData = TowerRpg.getPlugin().getPlayerDataManager().getPlayerData(player);
+        playerData.setParty(this);
     }
 
     @Override
     public void removePlayer(Player player) {
         members.remove(player.getUniqueId());
+
+        PlayerData playerData = TowerRpg.getPlugin().getPlayerDataManager().getPlayerData(player);
+        playerData.setParty(null);
     }
 
     @Override
@@ -72,6 +79,10 @@ public class Party implements IDungeonParty {
         return partyID;
     }
 
+    public UUID getLeaderUUID() {
+        return leader;
+    }
+
     public void setLeader(UUID leader) {
         this.leader = leader;
     }
@@ -84,8 +95,8 @@ public class Party implements IDungeonParty {
         DISPLAY_NAME("파티 이름", "Unknown"),
         MAX_PLAYER("최대 플레이어", 4),
         FRIENDLY_FIRE("아군 오사", false),
-        PARTY_TYPE("공개 여부", true),
-        USE_PASSWORD("비밀번호 사용", false),
+        PUBLIC_PARTY("공개 파티", true),
+        USE_PASSWORD("비밀번호 사용 여부", false),
         PASSWORD("비밀번호", "12345");
 
         private final String displayName;

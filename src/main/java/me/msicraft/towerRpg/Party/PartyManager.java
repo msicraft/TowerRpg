@@ -8,10 +8,7 @@ import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.TowerRpg;
 import org.bukkit.entity.Player;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class PartyManager extends CustomGuiManager {
 
@@ -26,6 +23,7 @@ public class PartyManager extends CustomGuiManager {
     public void openPartyInventory(Player player, int type) { // 0 = 파티 찾기, 1 =  파티 정보, 2 = 파티 생성
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
         PartyGui partyGui = (PartyGui) playerData.getCustomGui(GuiType.PARTY);
+        player.openInventory(partyGui.getInventory());
         partyGui.setGui(player, type);
     }
 
@@ -45,8 +43,12 @@ public class PartyManager extends CustomGuiManager {
         partyMap.remove(partyId);
     }
 
-    public Set<UUID> getPartyIds() {
+    public Set<UUID> getPartyIdKeySet() {
         return partyMap.keySet();
+    }
+
+    public List<UUID> getPartyIdsToList() {
+        return List.copyOf(getPartyIdKeySet());
     }
 
 }

@@ -3,6 +3,7 @@ package me.msicraft.towerRpg.PlayerData.Data;
 import me.msicraft.towerRpg.API.Data.CustomGui;
 import me.msicraft.towerRpg.Menu.GuiType;
 import me.msicraft.towerRpg.Menu.MenuGui;
+import me.msicraft.towerRpg.Party.Data.Party;
 import me.msicraft.towerRpg.Party.Menu.PartyGui;
 import me.msicraft.towerRpg.PlayerData.File.PlayerDataFile;
 import me.msicraft.towerRpg.Shop.Menu.ShopGui;
@@ -25,6 +26,8 @@ public class PlayerData {
     private final Map<String, Object> tempDataMap = new HashMap<>();
     private final Map<String, Object> dataMap = new HashMap<>();
     private final List<String> tagList = new ArrayList<>();
+
+    private Party party = null;
 
     private final PlayerPrefix playerPrefix;
 
@@ -163,6 +166,18 @@ public class PlayerData {
 
     public void removeTag(String key) {
         tagList.remove(key);
+    }
+
+    public Party getParty() {
+        return party;
+    }
+
+    public void setParty(Party party) {
+        this.party = party;
+    }
+
+    public boolean hasParty() {
+        return party != null;
     }
 
 }

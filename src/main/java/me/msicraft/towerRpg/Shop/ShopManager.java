@@ -92,6 +92,7 @@ public class ShopManager extends CustomGuiManager {
 
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
         ShopGui shopGui = (ShopGui) playerData.getCustomGui(GuiType.SHOP);
+        player.openInventory(shopGui.getInventory());
         shopGui.setGui(player, type);
     }
 

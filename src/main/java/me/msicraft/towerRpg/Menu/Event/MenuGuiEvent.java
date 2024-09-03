@@ -8,6 +8,7 @@ import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.PlayerData.PlayerDataManager;
 import me.msicraft.towerRpg.TowerRpg;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -83,6 +84,11 @@ public class MenuGuiEvent implements Listener {
                                     if (e.isLeftClick()) {
                                         partyManager.openPartyInventory(player, 0);
                                     } else if (e.isRightClick()) {
+                                        if (playerData.hasParty()) {
+                                            partyManager.openPartyInventory(player, 1);
+                                        } else {
+                                            player.sendMessage(ChatColor.RED + "파티가 없습니다.");
+                                        }
                                     }
                                 }
                             }
