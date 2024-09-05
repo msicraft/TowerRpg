@@ -2,6 +2,7 @@ package me.msicraft.towerRpg.Party.Menu;
 
 import me.msicraft.towerRpg.API.Data.CustomGui;
 import me.msicraft.towerRpg.Party.Data.Party;
+import me.msicraft.towerRpg.Party.Data.TempPartyInfo;
 import me.msicraft.towerRpg.Party.PartyManager;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.TowerRpg;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -119,6 +121,8 @@ public class PartyGui extends CustomGui {
         }
     }
 
+    private final int[] optionSlots = new int[]{19,20,21,22,23,24,25, 28,29,30,31,32,33,34, 37,38,39,40,41,42,43};
+
     private void setCreateParty(Player player) {
         ItemStack itemStack;
         itemStack = GuiUtil.createItemStack(Material.BARRIER, "뒤로", GuiUtil.EMPTY_LORE, -1,
@@ -127,9 +131,36 @@ public class PartyGui extends CustomGui {
         itemStack = GuiUtil.createItemStack(Material.ARROW, "파티 생성", GuiUtil.EMPTY_LORE, -1,
                 createPartyKey, "Create");
         gui.setItem(54, itemStack);
+
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+        TempPartyInfo tempPartyInfo = playerData.getTempPartyInfo();
+        Party.PartyOptions[] partyOptions = Party.PartyOptions.values();
+
+        int count = 0;
+        for (Party.PartyOptions options : partyOptions) {
+            ItemStack optionStack = new ItemStack(Material.PAPER);
+            ItemMeta itemMeta = optionStack.getItemMeta();
+            PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+
+            optionStack.setItemMeta(itemMeta);
+            gui.setItem(optionSlots[count], optionStack);
+            count++;
+        }
     }
 
+    private final int[] playerSlots = new int[]{
+                                                19,20,21,22,23,24,25,
+                                                28,29,30,31,32,33,34,
+                                                37,38,39,40,41,42,43}; //10,11,12,13,14,15,16,
+
     private void setPartyInfo(Player player) {
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+        Party party = playerData.getParty();
+        if (party == null) {
+            player.sendMessage(ChatColor.RED + "파티에 속해있지않습니다.");
+            plugin.getPartyManager().openPartyInventory(player, 0);
+            return;
+        }
         ItemStack itemStack;
         itemStack = GuiUtil.createItemStack(Material.ARROW, "다음 페이지", GuiUtil.EMPTY_LORE, -1,
                 partyInfoKey, "Next");
@@ -137,6 +168,45 @@ public class PartyGui extends CustomGui {
         itemStack = GuiUtil.createItemStack(Material.ARROW, "이전 페이지", GuiUtil.EMPTY_LORE, -1,
                 partyInfoKey, "Previous");
         gui.setItem(50, itemStack);
+        itemStack = GuiUtil.createItemStack(Material.BARRIER, "뒤로(좌) | 탈퇴(우)",
+                List.of(ChatColor.YELLOW + "좌 클릭: 뒤로", ChatColor.YELLOW + "우 클릭: 탈퇴"), -1,
+                partyInfoKey, "BackAndLeave");
+        gui.setItem(45, itemStack);
+
+        itemStack = GuiUtil.createItemStack(Material.BOOK, "파티 정보", List.of(""), -1, partyInfoKey, "PartyInfo");
+
+        int maxSize = playerSlots.length;
+        int count = 0;
+        List<UUID> members = party.getMembers();
+        List<Component> lore = new ArrayList<>();
+        for (UUID member : members) {
+            Player partyPlayer = Bukkit.getPlayer(member);
+            if (partyPlayer != null) {
+                lore.clear();
+                ItemStack partySlot = new ItemStack(Material.PLAYER_HEAD);
+                SkullMeta skullMeta = (SkullMeta) partySlot.getItemMeta();
+                PersistentDataContainer dataContainer = skullMeta.getPersistentDataContainer();
+                lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 파티원 추방 (파티장만 가능)"));
+                lore.add(Component.text(ChatColor.YELLOW + "우 클릭: 파티장 위임 (파티장만 가능)"));
+                lore.add(Component.text(""));
+                if (party.getLeaderUUID() == member) {
+                    lore.add(Component.text(ChatColor.GREEN + "파티장"));
+                } else {
+                    lore.add(Component.text(ChatColor.GREEN + "파티원"));
+                }
+                skullMeta.displayName(Component.text(ChatColor.GREEN + partyPlayer.getName()));
+                skullMeta.lore(lore);
+                skullMeta.setOwningPlayer(partyPlayer);
+                dataContainer.set(partyInfoKey, PersistentDataType.STRING, member.toString());
+
+                partySlot.setItemMeta(skullMeta);
+                gui.setItem(playerSlots[count], partySlot);
+                count++;
+                if (count >= maxSize) {
+                    break;
+                }
+            }
+        }
     }
 
     public NamespacedKey getSearchPartyKey() {

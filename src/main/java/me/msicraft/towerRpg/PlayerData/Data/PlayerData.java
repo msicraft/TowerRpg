@@ -4,6 +4,7 @@ import me.msicraft.towerRpg.API.Data.CustomGui;
 import me.msicraft.towerRpg.Menu.GuiType;
 import me.msicraft.towerRpg.Menu.MenuGui;
 import me.msicraft.towerRpg.Party.Data.Party;
+import me.msicraft.towerRpg.Party.Data.TempPartyInfo;
 import me.msicraft.towerRpg.Party.Menu.PartyGui;
 import me.msicraft.towerRpg.PlayerData.File.PlayerDataFile;
 import me.msicraft.towerRpg.Shop.Menu.ShopGui;
@@ -13,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -28,6 +30,7 @@ public class PlayerData {
     private final List<String> tagList = new ArrayList<>();
 
     private Party party = null;
+    private TempPartyInfo tempPartyInfo = null;
 
     private final PlayerPrefix playerPrefix;
 
@@ -178,6 +181,18 @@ public class PlayerData {
 
     public boolean hasParty() {
         return party != null;
+    }
+
+    @NotNull
+    public TempPartyInfo getTempPartyInfo() {
+        if (tempPartyInfo == null) {
+            tempPartyInfo = new TempPartyInfo();
+        }
+        return tempPartyInfo;
+    }
+
+    public void setTempPartyInfo(TempPartyInfo tempPartyInfo) {
+        this.tempPartyInfo = tempPartyInfo;
     }
 
 }

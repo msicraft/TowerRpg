@@ -1,5 +1,6 @@
 package me.msicraft.towerRpg.Party.Data;
 
+import me.msicraft.towerRpg.API.Data.Pair;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.TowerRpg;
 import net.playavalon.mythicdungeons.api.party.IDungeonParty;
@@ -18,21 +19,25 @@ public class Party implements IDungeonParty {
     private final List<UUID> members = new ArrayList<>();
     private final Map<PartyOptions, Object> optionMap = new HashMap<>();
 
-    public Party(Player player) {
+    public Party(Player player, TempPartyInfo tempPartyInfo) {
         this.partyID = UUID.randomUUID();
         this.leader = player.getUniqueId();
-        for (PartyOptions option : PartyOptions.values()) {
-            optionMap.put(option, option.getBaseValue());
+
+        for (Pair<PartyOptions, Object> pair : tempPartyInfo.getPartyOptionValueList()) {
+            optionMap.put(pair.getV1(), pair.getV2());
         }
+
         initDungeonParty(TowerRpg.getPlugin());
     }
 
-    public Party(UUID leader) {
+    public Party(UUID leader, TempPartyInfo tempPartyInfo) {
         this.partyID = UUID.randomUUID();
         this.leader = leader;
-        for (PartyOptions option : PartyOptions.values()) {
-            optionMap.put(option, option.getBaseValue());
+
+        for (Pair<PartyOptions, Object> pair : tempPartyInfo.getPartyOptionValueList()) {
+            optionMap.put(pair.getV1(), pair.getV2());
         }
+
         initDungeonParty(TowerRpg.getPlugin());
     }
 
@@ -92,19 +97,21 @@ public class Party implements IDungeonParty {
     }
 
     public enum PartyOptions {
-        DISPLAY_NAME("파티 이름", "Unknown"),
-        MAX_PLAYER("최대 플레이어", 4),
-        FRIENDLY_FIRE("아군 오사", false),
-        PUBLIC_PARTY("공개 파티", true),
-        USE_PASSWORD("비밀번호 사용 여부", false),
-        PASSWORD("비밀번호", "12345");
+        DISPLAY_NAME("파티 이름", "Unknown", "DisplayName"),
+        MAX_PLAYER("최대 플레이어", 4, "MaxPlayer"),
+        FRIENDLY_FIRE("아군 오사", false, "FriendlyFire"),
+        PUBLIC_PARTY("공개 파티", true, "PublicParty"),
+        USE_PASSWORD("비밀번호 사용 여부", false, "UsePassword"),
+        PASSWORD("비밀번호", "12345", "Password");
 
         private final String displayName;
         private final Object baseValue;
+        private final String key;
 
-        PartyOptions(String displayName, Object baseValue) {
+        PartyOptions(String displayName, Object baseValue, String key) {
             this.displayName = displayName;
             this.baseValue = baseValue;
+            this.key = key;
         }
 
         public String getDisplayName() {
@@ -114,6 +121,11 @@ public class Party implements IDungeonParty {
         public Object getBaseValue() {
             return baseValue;
         }
+
+        public String getKey() {
+            return key;
+        }
+
     }
 
 }

@@ -103,7 +103,6 @@ public class PartyMenuEvent implements Listener {
                             }
                         }
                     }
-                    return;
                 }
             }
         }
