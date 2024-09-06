@@ -37,13 +37,15 @@ public class PartyGui extends CustomGui {
         this.searchPartyKey = new NamespacedKey(plugin, "SearchParty");
         this.createPartyKey = new NamespacedKey(plugin, "CreateParty");
         this.partyInfoKey = new NamespacedKey(plugin, "PartyInfo");
+        this.editPartyOptionsKey = new NamespacedKey(plugin, "PartyOptionsEdit");
     }
 
     private final NamespacedKey searchPartyKey;
     private final NamespacedKey createPartyKey;
     private final NamespacedKey partyInfoKey;
+    private final NamespacedKey editPartyOptionsKey;
 
-    public void setGui(Player player, int type) { // 0 = 파티 찾기, 1 =  파티 정보, 2 = 파티 생성
+    public void setGui(Player player, int type) { // 0 = 파티 찾기, 1 =  파티 정보, 2 = 파티 생성, 3 = 파티 옵션 변경
         gui.clear();
         switch (type) {
             case 0 -> {
@@ -54,9 +56,13 @@ public class PartyGui extends CustomGui {
                 player.openInventory(getInventory());
                 setPartyInfo(player);
             }
-            case 2-> {
+            case 2 -> {
                 player.openInventory(getInventory());
                 setCreateParty(player);
+            }
+            case 3 -> {
+                player.openInventory(getInventory());
+                setEditPartyOption(player);
             }
         }
     }
@@ -137,13 +143,64 @@ public class PartyGui extends CustomGui {
         Party.PartyOptions[] partyOptions = Party.PartyOptions.values();
 
         int count = 0;
+        List<Component> lore = new ArrayList<>();
         for (Party.PartyOptions options : partyOptions) {
+            lore.clear();
             ItemStack optionStack = new ItemStack(Material.PAPER);
             ItemMeta itemMeta = optionStack.getItemMeta();
             PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+            itemMeta.displayName(Component.text(options.getDisplayName()));
+            Object value = tempPartyInfo.getPartyOptionValue(options);
+            switch (options) {
+                case DISPLAY_NAME -> {
+                    lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 값 변경"));
+                    lore.add(Component.text(""));
+                    lore.add(Component.text(ChatColor.GRAY + "파티 이름: " + value));
+                }
+                case MAX_PLAYER -> {
+                    lore.add(Component.text(ChatColor.YELLOW + "좌 클릭 : +1"));
+                    lore.add(Component.text(ChatColor.YELLOW + "우 클릭 : -1"));
+                    lore.add(Component.text(""));
+                    lore.add(Component.text(ChatColor.GRAY + "최대 플레이어: " + value));
+                }
+                case FRIENDLY_FIRE -> {
+                    lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 값 변경"));
+                    lore.add(Component.text(""));
+                    if ((boolean) value) {
+                        lore.add(Component.text(ChatColor.GRAY + "아군 오사: O"));
+                    } else {
+                        lore.add(Component.text(ChatColor.GRAY + "아군 오사: X"));
+                    }
+                }
+                case PUBLIC_PARTY -> {
+                    lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 값 변경"));
+                    lore.add(Component.text(""));
+                    if ((boolean) value) {
+                        lore.add(Component.text(ChatColor.GRAY + "공개 파티: O"));
+                    } else {
+                        lore.add(Component.text(ChatColor.GRAY + "공개 파티: X"));
+                    }
+                }
+                case USE_PASSWORD -> {
+                    lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 값 변경"));
+                    lore.add(Component.text(""));
+                    if ((boolean) value) {
+                        lore.add(Component.text(ChatColor.GRAY + "비밀번호 사용여부: O"));
+                    } else {
+                        lore.add(Component.text(ChatColor.GRAY + "비밀번호 사용여부: X"));
+                    }
+                }
+                case PASSWORD -> {
+                    lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 값 변경"));
+                    lore.add(Component.text(""));
+                    lore.add(Component.text(ChatColor.GRAY + "비밀번호: " + value));
+                }
+            }
+            itemMeta.lore(lore);
+            dataContainer.set(createPartyKey, PersistentDataType.STRING, options.name());
 
-            optionStack.setItemMeta(itemMeta);
-            gui.setItem(optionSlots[count], optionStack);
+            itemStack.setItemMeta(itemMeta);
+            gui.setItem(optionSlots[count], itemStack);
             count++;
         }
     }
@@ -162,18 +219,17 @@ public class PartyGui extends CustomGui {
             return;
         }
         ItemStack itemStack;
-        itemStack = GuiUtil.createItemStack(Material.ARROW, "다음 페이지", GuiUtil.EMPTY_LORE, -1,
-                partyInfoKey, "Next");
-        gui.setItem(48, itemStack);
-        itemStack = GuiUtil.createItemStack(Material.ARROW, "이전 페이지", GuiUtil.EMPTY_LORE, -1,
-                partyInfoKey, "Previous");
-        gui.setItem(50, itemStack);
         itemStack = GuiUtil.createItemStack(Material.BARRIER, "뒤로(좌) | 탈퇴(우)",
                 List.of(ChatColor.YELLOW + "좌 클릭: 뒤로", ChatColor.YELLOW + "우 클릭: 탈퇴"), -1,
                 partyInfoKey, "BackAndLeave");
         gui.setItem(45, itemStack);
 
-        itemStack = GuiUtil.createItemStack(Material.BOOK, "파티 정보", List.of(""), -1, partyInfoKey, "PartyInfo");
+        List<String> infoLore = new ArrayList<>();
+        infoLore.add(ChatColor.YELLOW + "좌 클릭: 파티 옵션 변경 (파티장 기능)");
+        infoLore.add("");
+        infoLore.addAll(party.partyOptionsToLore());
+        itemStack = GuiUtil.createItemStack(Material.BOOK, "파티 정보", infoLore, -1, partyInfoKey, "PartyInfo");
+        gui.setItem(5, itemStack);
 
         int maxSize = playerSlots.length;
         int count = 0;
@@ -186,8 +242,8 @@ public class PartyGui extends CustomGui {
                 ItemStack partySlot = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta skullMeta = (SkullMeta) partySlot.getItemMeta();
                 PersistentDataContainer dataContainer = skullMeta.getPersistentDataContainer();
-                lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 파티원 추방 (파티장만 가능)"));
-                lore.add(Component.text(ChatColor.YELLOW + "우 클릭: 파티장 위임 (파티장만 가능)"));
+                lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 파티원 추방 (파티장 기능)"));
+                lore.add(Component.text(ChatColor.YELLOW + "우 클릭: 파티장 위임 (파티장 가능)"));
                 lore.add(Component.text(""));
                 if (party.getLeaderUUID() == member) {
                     lore.add(Component.text(ChatColor.GREEN + "파티장"));
@@ -209,6 +265,82 @@ public class PartyGui extends CustomGui {
         }
     }
 
+    private void setEditPartyOption(Player player) {
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+        Party party = playerData.getParty();
+        if (party == null) {
+            player.sendMessage(ChatColor.RED + "파티에 속해있지않습니다.");
+            plugin.getPartyManager().openPartyInventory(player, 0);
+            return;
+        }
+        ItemStack itemStack;
+        itemStack = GuiUtil.createItemStack(Material.BARRIER, "뒤로", GuiUtil.EMPTY_LORE, -1, editPartyOptionsKey, "Back");
+        gui.setItem(45, itemStack);
+
+        int count = 0;
+        Party.PartyOptions[] partyOptions = Party.PartyOptions.values();
+        List<Component> lore = new ArrayList<>();
+        for (Party.PartyOptions options : partyOptions) {
+            lore.clear();
+            itemStack = new ItemStack(Material.PAPER);
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+            itemMeta.displayName(Component.text(options.getDisplayName()));
+            Object value = party.getPartyOptionValue(options);
+            switch (options) {
+                case DISPLAY_NAME -> {
+                    lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 값 변경"));
+                    lore.add(Component.text(""));
+                    lore.add(Component.text(ChatColor.GRAY + "파티 이름: " + value));
+                }
+                case MAX_PLAYER -> {
+                    lore.add(Component.text(ChatColor.YELLOW + "좌 클릭 : +1"));
+                    lore.add(Component.text(ChatColor.YELLOW + "우 클릭 : -1"));
+                    lore.add(Component.text(""));
+                    lore.add(Component.text(ChatColor.GRAY + "최대 플레이어: " + value));
+                }
+                case FRIENDLY_FIRE -> {
+                    lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 값 변경"));
+                    lore.add(Component.text(""));
+                    if ((boolean) value) {
+                        lore.add(Component.text(ChatColor.GRAY + "아군 오사: O"));
+                    } else {
+                        lore.add(Component.text(ChatColor.GRAY + "아군 오사: X"));
+                    }
+                }
+                case PUBLIC_PARTY -> {
+                    lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 값 변경"));
+                    lore.add(Component.text(""));
+                    if ((boolean) value) {
+                        lore.add(Component.text(ChatColor.GRAY + "공개 파티: O"));
+                    } else {
+                        lore.add(Component.text(ChatColor.GRAY + "공개 파티: X"));
+                    }
+                }
+                case USE_PASSWORD -> {
+                    lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 값 변경"));
+                    lore.add(Component.text(""));
+                    if ((boolean) value) {
+                        lore.add(Component.text(ChatColor.GRAY + "비밀번호 사용여부: O"));
+                    } else {
+                        lore.add(Component.text(ChatColor.GRAY + "비밀번호 사용여부: X"));
+                    }
+                }
+                case PASSWORD -> {
+                    lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 값 변경"));
+                    lore.add(Component.text(""));
+                    lore.add(Component.text(ChatColor.GRAY + "비밀번호: " + value));
+                }
+            }
+            itemMeta.lore(lore);
+            dataContainer.set(editPartyOptionsKey, PersistentDataType.STRING, options.name());
+
+            itemStack.setItemMeta(itemMeta);
+            gui.setItem(optionSlots[count], itemStack);
+            count++;
+        }
+    }
+
     public NamespacedKey getSearchPartyKey() {
         return searchPartyKey;
     }
@@ -219,6 +351,10 @@ public class PartyGui extends CustomGui {
 
     public NamespacedKey getPartyInfoKey() {
         return partyInfoKey;
+    }
+
+    public NamespacedKey getEditPartyOptionsKey() {
+        return editPartyOptionsKey;
     }
 
     @Override

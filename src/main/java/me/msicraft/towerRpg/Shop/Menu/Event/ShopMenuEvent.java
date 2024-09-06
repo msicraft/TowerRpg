@@ -44,6 +44,10 @@ public class ShopMenuEvent implements Listener {
                 e.setCancelled(true);
                 String message = PlainTextComponentSerializer.plainText().serialize(e.message());
                 if (message.equalsIgnoreCase("cancel")) {
+                    playerData.removeTempData("ShopInventory_Edit_Amount");
+                    Bukkit.getScheduler().runTask(plugin, ()-> {
+                        plugin.getShopManager().openShopInventory(player, 0);
+                    });
                     return;
                 }
                 int amount = Integer.parseInt(message.replaceAll("[^0-9]", ""));

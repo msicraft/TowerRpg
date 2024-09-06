@@ -20,7 +20,7 @@ public class PartyManager extends CustomGuiManager {
 
     private final Map<UUID, Party> partyMap = new LinkedHashMap<>();
 
-    public void openPartyInventory(Player player, int type) { // 0 = 파티 찾기, 1 =  파티 정보, 2 = 파티 생성
+    public void openPartyInventory(Player player, int type) { // 0 = 파티 찾기, 1 =  파티 정보, 2 = 파티 생성, 3 = 파티 옵션 변경
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
         PartyGui partyGui = (PartyGui) playerData.getCustomGui(GuiType.PARTY);
         player.openInventory(partyGui.getInventory());

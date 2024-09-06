@@ -21,7 +21,7 @@ public class TempPartyInfo {
         partyOptionsMap.put(option, value);
     }
 
-    public Object getValue(Party.PartyOptions option) {
+    public Object getPartyOptionValue(Party.PartyOptions option) {
         return partyOptionsMap.get(option);
     }
 
