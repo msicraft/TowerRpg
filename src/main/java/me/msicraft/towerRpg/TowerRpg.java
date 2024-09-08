@@ -12,9 +12,7 @@ import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.PlayerData.Event.PlayerDataRelatedEvent;
 import me.msicraft.towerRpg.PlayerData.PlayerDataManager;
 import me.msicraft.towerRpg.Prefix.Data.Prefix;
-import me.msicraft.towerRpg.Prefix.File.PrefixDataFile;
 import me.msicraft.towerRpg.Prefix.PrefixManager;
-import me.msicraft.towerRpg.Shop.File.ShopDataFile;
 import me.msicraft.towerRpg.Shop.Menu.Event.ShopMenuEvent;
 import me.msicraft.towerRpg.Shop.ShopManager;
 import net.milkbowl.vault.economy.Economy;
@@ -50,16 +48,10 @@ public final class TowerRpg extends JavaPlugin {
     private DungeonManager dungeonManager;
     private PartyManager partyManager;
 
-    private PrefixDataFile prefixDataFile;
-    private ShopDataFile shopDataFile;
-
     @Override
     public void onEnable() {
         plugin = this;
         createConfigFile();
-
-        this.prefixDataFile = new PrefixDataFile(this);
-        this.shopDataFile = new ShopDataFile(this);
 
         this.playerDataManager = new PlayerDataManager(this);
         this.prefixManager = new PrefixManager(this);
@@ -108,7 +100,8 @@ public final class TowerRpg extends JavaPlugin {
 
     public void reloadVariables() {
         reloadConfig();
-        prefixDataFile.reloadConfig();
+        prefixManager.getPrefixDataFile().reloadConfig();
+        shopManager.getShopDataFile().reloadConfig();
 
         prefixManager.update();
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -118,7 +111,6 @@ public final class TowerRpg extends JavaPlugin {
             prefixManager.applyPrefix(player, prefix);
         }
 
-        shopDataFile.reloadConfig();
         shopManager.reloadVariables();
         EntityRelatedEvent.getInstance().reloadVariables();
     }
@@ -171,14 +163,6 @@ public final class TowerRpg extends JavaPlugin {
 
     public PartyManager getPartyManager() {
         return partyManager;
-    }
-
-    public PrefixDataFile getPrefixDataFile() {
-        return prefixDataFile;
-    }
-
-    public ShopDataFile getShopDataFile() {
-        return shopDataFile;
     }
 
 }

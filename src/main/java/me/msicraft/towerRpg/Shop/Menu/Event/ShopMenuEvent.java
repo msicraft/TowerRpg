@@ -1,6 +1,8 @@
 package me.msicraft.towerRpg.Shop.Menu.Event;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import me.msicraft.towerRpg.Menu.GuiType;
+import me.msicraft.towerRpg.Menu.MenuGui;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.Shop.Data.SellItemSlot;
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
@@ -64,7 +66,8 @@ public class ShopMenuEvent implements Listener {
 
     @EventHandler
     public void shopInventoryClose(InventoryCloseEvent e) {
-        if (e.getReason() == InventoryCloseEvent.Reason.OPEN_NEW) {
+        InventoryCloseEvent.Reason reason = e.getReason();
+        if (reason == InventoryCloseEvent.Reason.OPEN_NEW) {
             return;
         }
         Inventory topInventory = e.getView().getTopInventory();
@@ -81,8 +84,10 @@ public class ShopMenuEvent implements Listener {
             }
             playerData.getTempData("ShopInventory_Sell_Stacks", null);
 
-            ShopManager shopManager = plugin.getShopManager();
-            shopManager.removeViewer(player);
+            if (reason != InventoryCloseEvent.Reason.CANT_USE) {
+                ShopManager shopManager = plugin.getShopManager();
+                shopManager.removeViewer(player);
+            }
         }
     }
 
@@ -135,6 +140,13 @@ public class ShopMenuEvent implements Listener {
                         }
                         case "Sell" -> {
                             shopManager.openShopInventory(player, 1);
+                        }
+                        case "Back" -> {
+                            MenuGui menuGui = (MenuGui) playerData.getCustomGui(GuiType.MAIN);
+                            player.openInventory(menuGui.getInventory());
+                        }
+                        case "Page" -> {
+                            return;
                         }
                         default -> {
                             if (e.isLeftClick()) {

@@ -82,7 +82,10 @@ public class PlayerData {
     }
 
     public CustomGui getCustomGui(GuiType guiType) {
-        CustomGui customGui = customGuiMap.getOrDefault(guiType, null);
+        CustomGui customGui = null;
+        if (customGuiMap.containsKey(guiType)) {
+            customGui = customGuiMap.get(guiType);
+        }
         if (customGui == null) {
             switch (guiType) {
                 case MAIN -> {

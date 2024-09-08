@@ -3,9 +3,11 @@ package me.msicraft.towerRpg.Party;
 import me.msicraft.towerRpg.API.Data.CustomGuiManager;
 import me.msicraft.towerRpg.Menu.GuiType;
 import me.msicraft.towerRpg.Party.Data.Party;
+import me.msicraft.towerRpg.Party.Data.TempPartyInfo;
 import me.msicraft.towerRpg.Party.Menu.PartyGui;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.TowerRpg;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -31,15 +33,15 @@ public class PartyManager extends CustomGuiManager {
         return partyMap.getOrDefault(partyId, null);
     }
 
-    public void addParty(UUID partyId, Party party) {
+    private void addParty(UUID partyId, Party party) {
         partyMap.put(partyId, party);
     }
 
-    public void addParty(Party party) {
+    private void addParty(Party party) {
         addParty(party.getPartyID(), party);
     }
 
-    public void removeParty(UUID partyId) {
+    private void removeParty(UUID partyId) {
         partyMap.remove(partyId);
     }
 
@@ -49,6 +51,21 @@ public class PartyManager extends CustomGuiManager {
 
     public List<UUID> getPartyIdsToList() {
         return List.copyOf(getPartyIdKeySet());
+    }
+
+    public void createParty(PlayerData playerData) {
+        Player player = playerData.getPlayer();
+        TempPartyInfo tempPartyInfo = playerData.getTempPartyInfo();
+        Party party = new Party(player, tempPartyInfo);
+        addParty(party);
+        player.sendMessage(ChatColor.GREEN + "파티가 생성되었습니다.");
+        playerData.setTempPartyInfo(new TempPartyInfo());
+        playerData.setParty(party);
+        openPartyInventory(player, 1);
+    }
+
+    public void disbandParty(Party party) {
+        removeParty(party.getPartyID());
     }
 
 }

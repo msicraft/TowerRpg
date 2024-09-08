@@ -27,17 +27,7 @@ public class Party implements IDungeonParty {
         for (Pair<PartyOptions, Object> pair : tempPartyInfo.getPartyOptionValueList()) {
             optionMap.put(pair.getV1(), pair.getV2());
         }
-
-        initDungeonParty(TowerRpg.getPlugin());
-    }
-
-    public Party(UUID leader, TempPartyInfo tempPartyInfo) {
-        this.partyID = UUID.randomUUID();
-        this.leader = leader;
-
-        for (Pair<PartyOptions, Object> pair : tempPartyInfo.getPartyOptionValueList()) {
-            optionMap.put(pair.getV1(), pair.getV2());
-        }
+        addPlayer(player);
 
         initDungeonParty(TowerRpg.getPlugin());
     }
@@ -54,16 +44,20 @@ public class Party implements IDungeonParty {
     public void addPlayer(Player player) {
         members.add(player.getUniqueId());
 
-        PlayerData playerData = TowerRpg.getPlugin().getPlayerDataManager().getPlayerData(player);
-        playerData.setParty(this);
+        if (player.isOnline()) {
+            PlayerData playerData = TowerRpg.getPlugin().getPlayerDataManager().getPlayerData(player);
+            playerData.setParty(this);
+        }
     }
 
     @Override
     public void removePlayer(Player player) {
         members.remove(player.getUniqueId());
 
-        PlayerData playerData = TowerRpg.getPlugin().getPlayerDataManager().getPlayerData(player);
-        playerData.setParty(null);
+        if (player.isOnline()) {
+            PlayerData playerData = TowerRpg.getPlugin().getPlayerDataManager().getPlayerData(player);
+            playerData.setParty(null);
+        }
     }
 
     @Override
@@ -91,9 +85,11 @@ public class Party implements IDungeonParty {
             if (player != null) {
                 PlayerData playerData = TowerRpg.getPlugin().getPlayerDataManager().getPlayerData(player);
                 playerData.setParty(null);
+
+                player.sendMessage(ChatColor.RED + "파티가 해체되었습니다.");
             }
         }
-        TowerRpg.getPlugin().getPartyManager().removeParty(getPartyID());
+        TowerRpg.getPlugin().getPartyManager().disbandParty(this);
     }
 
     public UUID getPartyID() {

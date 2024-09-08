@@ -6,8 +6,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.logging.Level;
 
 public class ShopDataFile {
@@ -27,11 +25,14 @@ public class ShopDataFile {
 
         this.dataConfig = YamlConfiguration.loadConfiguration(this.configFile);
 
+        /*
         InputStream defaultStream = plugin.getResource("shopData.yml");
         if (defaultStream != null) {
             YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultStream));
             this.dataConfig.setDefaults(defaultConfig);
         }
+
+         */
     }
 
     public FileConfiguration getConfig() {

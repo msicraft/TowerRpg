@@ -20,17 +20,18 @@ import java.util.*;
 public class PrefixManager {
 
     private final TowerRpg plugin;
+    private final PrefixDataFile prefixDataFile;
     private final String PREFIX_KEY = "TowerRpgPrefixStat";
 
     public PrefixManager(TowerRpg plugin) {
         this.plugin = plugin;
+        this.prefixDataFile = new PrefixDataFile(plugin);
         update();
     }
 
     private final Map<String, Prefix> prefixMap = new HashMap<>();
 
     public void update() {
-        PrefixDataFile prefixDataFile = plugin.getPrefixDataFile();
         FileConfiguration config = prefixDataFile.getConfig();
 
         ConfigurationSection section = config.getConfigurationSection("Prefix");
@@ -89,6 +90,10 @@ public class PrefixManager {
             prefixes.add(prefix);
         }
         return prefixes;
+    }
+
+    public PrefixDataFile getPrefixDataFile() {
+        return prefixDataFile;
     }
 
 }

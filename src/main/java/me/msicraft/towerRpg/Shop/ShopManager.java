@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -21,6 +22,7 @@ import java.util.*;
 public class ShopManager extends CustomGuiManager {
 
     private final TowerRpg plugin;
+    private final ShopDataFile shopDataFile;
 
     private final Map<String, ShopItem> shopItemMap = new LinkedHashMap<>();
 
@@ -37,14 +39,16 @@ public class ShopManager extends CustomGuiManager {
 
     public ShopManager(TowerRpg plugin) {
         this.plugin = plugin;
+        this.shopDataFile = new ShopDataFile(plugin);
         reloadVariables();
     }
 
     public void closeShopInventory() {
-        for (UUID uuid : getViewers()) {
+        List<UUID> viewers = getViewers();
+        for (UUID uuid : viewers) {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) {
-                player.closeInventory();
+                player.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
                 player.sendMessage(ChatColor.RED + "현재 상점 가격 조정 중입니다. 잠시 후 이용해 주시기를 바랍니다.");
             }
         }
@@ -52,11 +56,9 @@ public class ShopManager extends CustomGuiManager {
     }
 
     public void reloadVariables() {
+        //shopDataFile = new ShopDataFile(plugin);
         setShopMaintenance(true);
-
         closeShopInventory();
-
-        saveShopData();
 
         FileConfiguration config = plugin.getConfig();
 
@@ -97,7 +99,6 @@ public class ShopManager extends CustomGuiManager {
     }
 
     public void saveShopData() {
-        ShopDataFile shopDataFile = plugin.getShopDataFile();
         FileConfiguration config = shopDataFile.getConfig();
 
         for (String key : shopItemMap.keySet()) {
@@ -115,13 +116,10 @@ public class ShopManager extends CustomGuiManager {
     }
 
     public void loadShopData() {
-        ShopDataFile shopDataFile = plugin.getShopDataFile();
         FileConfiguration config = shopDataFile.getConfig();
 
         ConfigurationSection itemSection = config.getConfigurationSection("Items");
         if (itemSection != null) {
-            shopItemMap.clear();
-
             Set<String> internalNames = itemSection.getKeys(false);
             for (String key : internalNames) {
                 String path = "Items." + key;
@@ -131,11 +129,22 @@ public class ShopManager extends CustomGuiManager {
                 double price = config.getDouble(path + ".Price");
                 int buyQuantity = config.getInt(path + ".BuyQuantity");
                 int sellQuantity = config.getInt(path + ".SellQuantity");
-                ShopItem shopItem = new ShopItem(key, itemStack, stock, basePrice, price, buyQuantity, sellQuantity);
+                ShopItem shopItem;
+                if (shopItemMap.containsKey(key)) {
+                    shopItem = shopItemMap.get(key);
+                    shopItem.setStock(stock);
+                    shopItem.setBasePrice(basePrice);
+                    shopItem.setPrice(price);
+                    shopItem.setBuyQuantity(buyQuantity);
+                    shopItem.setSellQuantity(sellQuantity);
+                } else {
+                    shopItem  = new ShopItem(key, itemStack, stock, basePrice, price, buyQuantity, sellQuantity);
+                }
 
                 shopItemMap.put(key, shopItem);
             }
         } else {
+            shopItemMap.clear();
             Bukkit.getConsoleSender().sendMessage(TowerRpg.PREFIX + ChatColor.RED + "상점 데이터가 존재하지 않습니다");
         }
     }
@@ -256,4 +265,10 @@ public class ShopManager extends CustomGuiManager {
     public void setShopMaintenance(boolean shopMaintenance) {
         isShopMaintenance = shopMaintenance;
     }
+
+    public ShopDataFile getShopDataFile() {
+        return shopDataFile;
+    }
+
 }
+

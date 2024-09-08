@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +50,17 @@ public class MainCommand implements CommandExecutor {
                                             if (shopManager.hasInternalName(internalName)) {
                                                 player.sendMessage(ChatColor.RED + "이미 존재하는 내부이름입니다");
                                             } else {
-                                                shopManager.addShopItem(internalName, new ShopItem(internalName, itemStack, basePrice));
+                                                FileConfiguration config = shopManager.getShopDataFile().getConfig();
+                                                ShopItem shopItem = new ShopItem(internalName, itemStack, basePrice);
+                                                shopManager.addShopItem(internalName, shopItem);
+                                                String path = "Items." + shopItem.getId();
+                                                config.set(path + ".ItemStack", shopItem.getItemStack());
+                                                config.set(path + ".Stock", shopItem.getStock());
+                                                config.set(path + ".BasePrice", shopItem.getBasePrice());
+                                                config.set(path + ".Price", shopItem.getPrice(false));
+                                                config.set(path + ".BuyQuantity", shopItem.getBuyQuantity());
+                                                config.set(path + ".SellQuantity", shopItem.getSellQuantity());
+                                                shopManager.getShopDataFile().saveConfig();
                                                 player.sendMessage(ChatColor.GREEN + "아이템이 등록되었습니다");
                                             }
                                         } else {
@@ -62,6 +73,9 @@ public class MainCommand implements CommandExecutor {
                                     String internalName = args[2];
                                     if (shopManager.hasInternalName(internalName)) {
                                         shopManager.removeShopItem(internalName);
+                                        shopManager.getShopDataFile().getConfig().set("Items." + internalName, null);
+                                        shopManager.getShopDataFile().saveConfig();
+                                        sender.sendMessage(ChatColor.GREEN + "상점 아이템이 제거되었습니다.");
                                     } else {
                                         sender.sendMessage(ChatColor.RED + "해당 내부이름이 존재하지 않습니다");
                                     }

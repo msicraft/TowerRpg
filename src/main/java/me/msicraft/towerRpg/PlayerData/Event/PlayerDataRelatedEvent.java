@@ -1,7 +1,11 @@
 package me.msicraft.towerRpg.PlayerData.Event;
 
+import me.msicraft.towerRpg.API.CustomEvent.PlayerDataLoadEvent;
+import me.msicraft.towerRpg.API.CustomEvent.PlayerDataUnloadEvent;
+import me.msicraft.towerRpg.Party.Data.Party;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.TowerRpg;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,6 +37,10 @@ public class PlayerDataRelatedEvent implements Listener {
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
 
         playerData.loadData();
+
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            Bukkit.getPluginManager().callEvent(new PlayerDataLoadEvent(playerData));
+        });
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -43,6 +51,29 @@ public class PlayerDataRelatedEvent implements Listener {
         playerData.saveData();
 
         plugin.getPlayerDataManager().unregisterPlayerData(player);
+
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            Bukkit.getPluginManager().callEvent(new PlayerDataUnloadEvent(playerData));
+        });
+    }
+
+    @EventHandler
+    public void playerDataLoad(PlayerDataLoadEvent e) {
+        PlayerData playerData = e.getPlayerData();
+    }
+
+    @EventHandler
+    public void playerDataUnload(PlayerDataUnloadEvent e) {
+        PlayerData playerData = e.getPlayerData();
+
+        if (playerData.hasParty()) {
+            Party party = playerData.getParty();
+            if (party.getLeaderUUID().equals(playerData.getPlayer().getUniqueId())) {
+                party.disband();
+            } else {
+                party.removePlayer(playerData.getPlayer());
+            }
+        }
     }
 
 }

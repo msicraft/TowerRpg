@@ -77,7 +77,11 @@ public class PartyGui extends CustomGui {
         gui.setItem(50, itemStack);
         itemStack = GuiUtil.createItemStack(Material.WRITTEN_BOOK, "파티 생성", GuiUtil.EMPTY_LORE, -1,
                 searchPartyKey, "Create");
+        gui.setItem(53, itemStack);
+        itemStack = GuiUtil.createItemStack(Material.BARRIER, "뒤로", GuiUtil.EMPTY_LORE, -1,
+                searchPartyKey, "Back");
         gui.setItem(45, itemStack);
+
 
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
         PartyManager partyManager = plugin.getPartyManager();
@@ -110,7 +114,7 @@ public class PartyGui extends CustomGui {
                     lore.add(Component.text(ChatColor.GRAY + "비공개 파티"));
                 }
                 lore.add(Component.text(""));
-                lore.add(Component.text(ChatColor.GRAY + "파티장: " + Bukkit.getPlayer(party.getLeaderUUID())));
+                lore.add(Component.text(ChatColor.GRAY + "파티장: " + Bukkit.getPlayer(party.getLeaderUUID()).getName()));
                 lore.add(Component.text(ChatColor.GRAY + "파티 인원: "
                         + party.getMembers().size() + "/" + party.getPartyOptionValue(Party.PartyOptions.MAX_PLAYER)));
                 itemMeta.lore(lore);
@@ -136,7 +140,7 @@ public class PartyGui extends CustomGui {
         gui.setItem(45, itemStack);
         itemStack = GuiUtil.createItemStack(Material.ARROW, "파티 생성", GuiUtil.EMPTY_LORE, -1,
                 createPartyKey, "Create");
-        gui.setItem(54, itemStack);
+        gui.setItem(53, itemStack);
 
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
         TempPartyInfo tempPartyInfo = playerData.getTempPartyInfo();
@@ -199,8 +203,8 @@ public class PartyGui extends CustomGui {
             itemMeta.lore(lore);
             dataContainer.set(createPartyKey, PersistentDataType.STRING, options.name());
 
-            itemStack.setItemMeta(itemMeta);
-            gui.setItem(optionSlots[count], itemStack);
+            optionStack.setItemMeta(itemMeta);
+            gui.setItem(optionSlots[count], optionStack);
             count++;
         }
     }
@@ -219,17 +223,18 @@ public class PartyGui extends CustomGui {
             return;
         }
         ItemStack itemStack;
-        itemStack = GuiUtil.createItemStack(Material.BARRIER, "뒤로(좌) | 탈퇴(우)",
+        itemStack = GuiUtil.createItemStack(Material.BARRIER,  ChatColor.WHITE+ "뒤로(좌) | 탈퇴(우)",
                 List.of(ChatColor.YELLOW + "좌 클릭: 뒤로", ChatColor.YELLOW + "우 클릭: 탈퇴"), -1,
                 partyInfoKey, "BackAndLeave");
         gui.setItem(45, itemStack);
 
         List<String> infoLore = new ArrayList<>();
         infoLore.add(ChatColor.YELLOW + "좌 클릭: 파티 옵션 변경 (파티장 기능)");
+        infoLore.add(ChatColor.YELLOW + "우 클릭: 파티 해체 (파티장 기능)");
         infoLore.add("");
         infoLore.addAll(party.partyOptionsToLore());
         itemStack = GuiUtil.createItemStack(Material.BOOK, "파티 정보", infoLore, -1, partyInfoKey, "PartyInfo");
-        gui.setItem(5, itemStack);
+        gui.setItem(4, itemStack);
 
         int maxSize = playerSlots.length;
         int count = 0;

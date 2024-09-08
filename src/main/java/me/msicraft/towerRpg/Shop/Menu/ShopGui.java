@@ -60,8 +60,9 @@ public class ShopGui extends CustomGui {
         gui.setItem(48, itemStack);
         itemStack = GuiUtil.createItemStack(Material.ARROW, "이전 페이지", GuiUtil.EMPTY_LORE, -1, shopItemBuyKey, "Previous");
         gui.setItem(50, itemStack);
-
         itemStack = GuiUtil.createItemStack(Material.CHEST, "아이템 판매", GuiUtil.EMPTY_LORE, -1, shopItemBuyKey, "Sell");
+        gui.setItem(53, itemStack);
+        itemStack = GuiUtil.createItemStack(Material.BARRIER, "뒤로", GuiUtil.EMPTY_LORE, -1, shopItemBuyKey, "Back");
         gui.setItem(45, itemStack);
 
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
