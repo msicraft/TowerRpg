@@ -1,11 +1,14 @@
 package me.msicraft.towerRpg.Menu.Event;
 
 import me.msicraft.towerRpg.API.Data.CustomGui;
+import me.msicraft.towerRpg.Dungeon.Data.DungeonType;
 import me.msicraft.towerRpg.Menu.GuiType;
 import me.msicraft.towerRpg.Menu.MenuGui;
+import me.msicraft.towerRpg.Party.Menu.PartyGui;
 import me.msicraft.towerRpg.Party.PartyManager;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.PlayerData.PlayerDataManager;
+import me.msicraft.towerRpg.Shop.Menu.ShopGui;
 import me.msicraft.towerRpg.TowerRpg;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -77,19 +80,22 @@ public class MenuGuiEvent implements Listener {
                                     Bukkit.dispatchCommand(player,"skills");
                                 }
                                 case "ShopInventory" -> {
-                                    plugin.getShopManager().openShopInventory(player, 0);
+                                    plugin.getShopManager().openShopInventory(player, ShopGui.Type.BUY);
                                 }
                                 case "Party" -> {
                                     PartyManager partyManager = plugin.getPartyManager();
                                     if (e.isLeftClick()) {
-                                        partyManager.openPartyInventory(player, 0);
+                                        partyManager.openPartyInventory(player, PartyGui.Type.SEARCH);
                                     } else if (e.isRightClick()) {
                                         if (playerData.hasParty()) {
-                                            partyManager.openPartyInventory(player, 1);
+                                            partyManager.openPartyInventory(player, PartyGui.Type.INFO);
                                         } else {
                                             player.sendMessage(ChatColor.RED + "파티가 없습니다.");
                                         }
                                     }
+                                }
+                                case "Dungeon" -> {
+                                    plugin.getDungeonManager().openDugeonInventory(DungeonType.BEGINNING_TOWER, player);
                                 }
                             }
                         }

@@ -1,6 +1,7 @@
 package me.msicraft.towerRpg.PlayerData.Data;
 
 import me.msicraft.towerRpg.API.Data.CustomGui;
+import me.msicraft.towerRpg.Dungeon.Menu.DungeonGui;
 import me.msicraft.towerRpg.Menu.GuiType;
 import me.msicraft.towerRpg.Menu.MenuGui;
 import me.msicraft.towerRpg.Party.Data.Party;
@@ -98,6 +99,10 @@ public class PlayerData {
                 }
                 case PARTY -> {
                     customGui = new PartyGui(TowerRpg.getPlugin());
+                    customGuiMap.put(guiType, customGui);
+                }
+                case DUNGEON -> {
+                    customGui = new DungeonGui(TowerRpg.getPlugin());
                     customGuiMap.put(guiType, customGui);
                 }
                 default -> {

@@ -84,7 +84,7 @@ public class ShopManager extends CustomGuiManager {
         player.sendMessage(ChatColor.RED + "현재 상점 가격 조정 중입니다. 잠시 후 이용해 주시기를 바랍니다.");
     }
 
-    public void openShopInventory(Player player, int type) { // 0 = 기본, 1 = 판매
+    public void openShopInventory(Player player, ShopGui.Type type) { // 0 = 기본, 1 = 판매
         if (isShopMaintenance) {
             player.closeInventory();
             sendMaintenanceMessage(player);
@@ -195,7 +195,7 @@ public class ShopManager extends CustomGuiManager {
             playerData.setTempData("ShopInventory_Sell_Stacks", null);
 
             player.sendMessage(ChatColor.GREEN + "모든 아이템이 판매되었습니다.");
-            openShopInventory(player, 1);
+            openShopInventory(player, ShopGui.Type.SELL);
         } else {
             player.sendMessage(ChatColor.RED + "판매할 아이템이 없습니다.");
         }

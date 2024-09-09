@@ -44,6 +44,9 @@ public class MenuGui extends CustomGui {
                 List.of(ChatColor.YELLOW + "좌 클릭: 피티 찾기", ChatColor.YELLOW + "우 클릭: 파티 정보"), -1,
                 dataTag, "Party");
         gui.setItem(20, itemStack);
+        itemStack = GuiUtil.createItemStack(Material.BARRIER, "임시 (던전)", GuiUtil.EMPTY_LORE, -1,
+                dataTag, "Dungeon");
+        gui.setItem(21, itemStack);
     }
 
 

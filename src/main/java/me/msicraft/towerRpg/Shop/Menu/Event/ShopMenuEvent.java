@@ -48,7 +48,7 @@ public class ShopMenuEvent implements Listener {
                 if (message.equalsIgnoreCase("cancel")) {
                     playerData.removeTempData("ShopInventory_Edit_Amount");
                     Bukkit.getScheduler().runTask(plugin, ()-> {
-                        plugin.getShopManager().openShopInventory(player, 0);
+                        plugin.getShopManager().openShopInventory(player, ShopGui.Type.BUY);
                     });
                     return;
                 }
@@ -59,7 +59,7 @@ public class ShopMenuEvent implements Listener {
             }
             playerData.removeTempData("ShopInventory_Edit_Amount");
             Bukkit.getScheduler().runTask(plugin, ()-> {
-                plugin.getShopManager().openShopInventory(player, 0);
+                plugin.getShopManager().openShopInventory(player, ShopGui.Type.BUY);
             });
         }
     }
@@ -128,7 +128,7 @@ public class ShopMenuEvent implements Listener {
                                 next = 0;
                             }
                             playerData.setTempData("ShopInventory_Page", next);
-                            shopManager.openShopInventory(player, 0);
+                            shopManager.openShopInventory(player, ShopGui.Type.BUY);
                         }
                         case "Previous" -> {
                             int previous = current - 1;
@@ -136,10 +136,10 @@ public class ShopMenuEvent implements Listener {
                                 previous = maxPage;
                             }
                             playerData.setTempData("ShopInventory_Page", previous);
-                            shopManager.openShopInventory(player, 0);
+                            shopManager.openShopInventory(player, ShopGui.Type.BUY);
                         }
                         case "Sell" -> {
-                            shopManager.openShopInventory(player, 1);
+                            shopManager.openShopInventory(player, ShopGui.Type.SELL);
                         }
                         case "Back" -> {
                             MenuGui menuGui = (MenuGui) playerData.getCustomGui(GuiType.MAIN);
@@ -173,7 +173,7 @@ public class ShopMenuEvent implements Listener {
                 if (data != null) {
                     switch (data) {
                         case "Back" -> {
-                            shopManager.openShopInventory(player, 0);
+                            shopManager.openShopInventory(player, ShopGui.Type.BUY);
                         }
                         case "SellConfirm" -> {
                             shopManager.sellShopItem(player);
@@ -230,7 +230,7 @@ public class ShopMenuEvent implements Listener {
                         }
                     }
                     playerData.setTempData("ShopInventory_Sell_Stacks", sellItemSlots);
-                    shopManager.openShopInventory(player, 1);
+                    shopManager.openShopInventory(player, ShopGui.Type.SELL);
                 }
             }
         }

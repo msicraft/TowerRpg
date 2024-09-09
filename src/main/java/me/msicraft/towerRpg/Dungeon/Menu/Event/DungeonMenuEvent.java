@@ -1,7 +1,15 @@
 package me.msicraft.towerRpg.Dungeon.Menu.Event;
 
+import me.msicraft.towerRpg.Dungeon.Data.DungeonType;
+import me.msicraft.towerRpg.Dungeon.DungeonManager;
 import me.msicraft.towerRpg.Dungeon.Menu.DungeonGui;
+import me.msicraft.towerRpg.Party.Data.Party;
+import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.TowerRpg;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 public class DungeonMenuEvent implements Listener {
 
@@ -40,7 +49,68 @@ public class DungeonMenuEvent implements Listener {
             if (itemMeta == null) {
                 return;
             }
+            PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+            DungeonManager dungeonManager = plugin.getDungeonManager();
             PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+            NamespacedKey selectFloorKey = dungeonGui.getSelectKey();
+            ItemStack dungeonTypeStack = topInventory.getItem(49);
+            if (dungeonTypeStack == null) {
+                return;
+            }
+            if (dungeonTypeStack.getType() == Material.BOOK) {
+                ItemMeta dungeonItemMeta = dungeonTypeStack.getItemMeta();
+                PersistentDataContainer dungeonDataContainer = dungeonItemMeta.getPersistentDataContainer();
+                if (!dungeonDataContainer.has(dungeonGui.getDungeonTypeKey())) {
+                    return;
+                }
+                String dungeonTypeS = dungeonDataContainer.get(dungeonGui.getDungeonTypeKey(), PersistentDataType.STRING);
+                DungeonType dungeonType = null;
+                try {
+                    dungeonType = DungeonType.valueOf(dungeonTypeS);
+                } catch (IllegalArgumentException ex) {
+                    player.sendMessage(ChatColor.RED + "존재하지 않는 던전입니다.");
+                    player.closeInventory();
+                    return;
+                }
+                if (dataContainer.has(selectFloorKey)) {
+                    String data = dataContainer.get(selectFloorKey, PersistentDataType.STRING);
+                    if (data != null) {
+                        String pageKey = dungeonType.getKey() + "_page";
+                        int maxPage = dungeonType.getTotalFloor() / 45;
+                        int current = (int) playerData.getTempData(pageKey, 1);
+                        switch (data) {
+                            case "Next" -> {
+                                int next = current + 1;
+                                if (next > maxPage) {
+                                    next = 0;
+                                }
+                                playerData.setTempData(pageKey, next);
+                                dungeonManager.openDugeonInventory(dungeonType, player);
+                            }
+                            case "Previous" -> {
+                                int previous = current - 1;
+                                if (previous < 0) {
+                                    previous = maxPage;
+                                }
+                                playerData.setTempData(pageKey, previous);
+                                dungeonManager.openDugeonInventory(dungeonType, player);
+                            }
+                            default -> {
+                                if (playerData.hasParty()) {
+                                    Party party = playerData.getParty();
+                                    if (!party.getLeaderUUID().equals(player.getUniqueId())) {
+                                        player.sendMessage(ChatColor.RED + "파티장만 입장신청이 가능합니다.");
+                                        return;
+                                    }
+                                }
+                                String dungeonName = dungeonType.getKey() + "_" + data;
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"md play " + dungeonName + " " + player.getName());
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     }
 

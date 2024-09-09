@@ -25,6 +25,10 @@ import java.util.List;
 
 public class ShopGui extends CustomGui {
 
+    public enum Type {
+        BUY, SELL
+    }
+
     private final Inventory gui;
     private final TowerRpg plugin;
 
@@ -39,14 +43,14 @@ public class ShopGui extends CustomGui {
     private final NamespacedKey shopItemBuyKey;
     private final NamespacedKey shopItemSellKey;
 
-    public void setGui(Player player, int type) { // 0 = 기본, 1 = 판매
+    public void setGui(Player player, Type type) { // 0 = 기본, 1 = 판매
         gui.clear();
         switch (type) {
-            case 0 -> {
+            case BUY -> {
                 player.openInventory(getInventory());
                 setShopBuyInv(player);
             }
-            case 1 -> {
+            case SELL -> {
                 player.openInventory(getInventory());
                 setShopSellInv(player);
             }

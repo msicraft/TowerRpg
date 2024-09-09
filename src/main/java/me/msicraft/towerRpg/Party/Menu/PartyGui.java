@@ -27,6 +27,10 @@ import java.util.UUID;
 
 public class PartyGui extends CustomGui {
 
+    public enum Type {
+        SEARCH, INFO, CREATE, EDIT
+    }
+
     private final Inventory gui;
     private final TowerRpg plugin;
 
@@ -34,10 +38,10 @@ public class PartyGui extends CustomGui {
         this.plugin = plugin;
         this.gui = Bukkit.createInventory(this, 54, Component.text("파티"));
 
-        this.searchPartyKey = new NamespacedKey(plugin, "SearchParty");
-        this.createPartyKey = new NamespacedKey(plugin, "CreateParty");
-        this.partyInfoKey = new NamespacedKey(plugin, "PartyInfo");
-        this.editPartyOptionsKey = new NamespacedKey(plugin, "PartyOptionsEdit");
+        this.searchPartyKey = new NamespacedKey(plugin, "PartyGUi_SearchParty");
+        this.createPartyKey = new NamespacedKey(plugin, "PartyGUi_CreateParty");
+        this.partyInfoKey = new NamespacedKey(plugin, "PartyGUi_PartyInfo");
+        this.editPartyOptionsKey = new NamespacedKey(plugin, "PartyGUi_PartyOptionsEdit");
     }
 
     private final NamespacedKey searchPartyKey;
@@ -45,22 +49,22 @@ public class PartyGui extends CustomGui {
     private final NamespacedKey partyInfoKey;
     private final NamespacedKey editPartyOptionsKey;
 
-    public void setGui(Player player, int type) { // 0 = 파티 찾기, 1 =  파티 정보, 2 = 파티 생성, 3 = 파티 옵션 변경
+    public void setGui(Player player, Type type) { // 0 = 파티 찾기, 1 =  파티 정보, 2 = 파티 생성, 3 = 파티 옵션 변경
         gui.clear();
         switch (type) {
-            case 0 -> {
+            case SEARCH -> {
                 player.openInventory(getInventory());
                 setSearchParty(player);
             }
-            case 1 -> {
+            case INFO -> {
                 player.openInventory(getInventory());
                 setPartyInfo(player);
             }
-            case 2 -> {
+            case CREATE -> {
                 player.openInventory(getInventory());
                 setCreateParty(player);
             }
-            case 3 -> {
+            case EDIT -> {
                 player.openInventory(getInventory());
                 setEditPartyOption(player);
             }
@@ -219,7 +223,7 @@ public class PartyGui extends CustomGui {
         Party party = playerData.getParty();
         if (party == null) {
             player.sendMessage(ChatColor.RED + "파티에 속해있지않습니다.");
-            plugin.getPartyManager().openPartyInventory(player, 0);
+            plugin.getPartyManager().openPartyInventory(player, Type.SEARCH);
             return;
         }
         ItemStack itemStack;
@@ -275,7 +279,7 @@ public class PartyGui extends CustomGui {
         Party party = playerData.getParty();
         if (party == null) {
             player.sendMessage(ChatColor.RED + "파티에 속해있지않습니다.");
-            plugin.getPartyManager().openPartyInventory(player, 0);
+            plugin.getPartyManager().openPartyInventory(player, Type.SEARCH);
             return;
         }
         ItemStack itemStack;

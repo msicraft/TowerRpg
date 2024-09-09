@@ -46,7 +46,7 @@ public class PartyMenuEvent implements Listener {
             if (message.equalsIgnoreCase("cancel")) {
                 playerData.removeTempData("TempPartyOption");
                 Bukkit.getScheduler().runTask(plugin, ()-> {
-                    plugin.getPartyManager().openPartyInventory(player, 2);
+                    plugin.getPartyManager().openPartyInventory(player, PartyGui.Type.CREATE);
                 });
                 return;
             }
@@ -71,7 +71,7 @@ public class PartyMenuEvent implements Listener {
             }
             playerData.removeTempData("TempPartyOption");
             Bukkit.getScheduler().runTask(plugin, ()-> {
-                plugin.getPartyManager().openPartyInventory(player, 2);
+                plugin.getPartyManager().openPartyInventory(player, PartyGui.Type.CREATE);
             });
         } else if (playerData.hasTempData("PartyOption")) {
             String optionName = (String) playerData.getTempData("PartyOption", null);
@@ -81,7 +81,7 @@ public class PartyMenuEvent implements Listener {
             if (message.equalsIgnoreCase("cancel")) {
                 playerData.removeTempData("PartyOption");
                 Bukkit.getScheduler().runTask(plugin, ()-> {
-                    plugin.getPartyManager().openPartyInventory(player, 3);
+                    plugin.getPartyManager().openPartyInventory(player, PartyGui.Type.EDIT);
                 });
                 return;
             }
@@ -111,7 +111,7 @@ public class PartyMenuEvent implements Listener {
             }
             playerData.removeTempData("PartyOption");
             Bukkit.getScheduler().runTask(plugin, ()-> {
-                plugin.getPartyManager().openPartyInventory(player, 3);
+                plugin.getPartyManager().openPartyInventory(player, PartyGui.Type.EDIT);
             });
         } else if (playerData.hasTempData("Party_PasswordCheck")) {
             String partyUUIDS = (String) playerData.getTempData("Party_PasswordCheck");
@@ -121,7 +121,7 @@ public class PartyMenuEvent implements Listener {
                 player.sendMessage(ChatColor.RED + "해당 파티가 존재하지않습니다.");
                 playerData.removeTempData("Party_PasswordCheck");
                 Bukkit.getScheduler().runTask(plugin, ()-> {
-                    plugin.getPartyManager().openPartyInventory(player, 0);
+                    plugin.getPartyManager().openPartyInventory(player, PartyGui.Type.SEARCH);
                 });
                 return;
             }
@@ -129,7 +129,7 @@ public class PartyMenuEvent implements Listener {
             if (message.equalsIgnoreCase("cancel")) {
                 playerData.removeTempData("Party_PasswordCheck");
                 Bukkit.getScheduler().runTask(plugin, ()-> {
-                    plugin.getPartyManager().openPartyInventory(player, 0);
+                    plugin.getPartyManager().openPartyInventory(player, PartyGui.Type.SEARCH);
                 });
                 return;
             }
@@ -141,21 +141,21 @@ public class PartyMenuEvent implements Listener {
                     player.sendMessage(ChatColor.RED + "파티 인원이 최대입니다.");
                     playerData.removeTempData("Party_PasswordCheck");
                     Bukkit.getScheduler().runTask(plugin, ()-> {
-                        plugin.getPartyManager().openPartyInventory(player, 0);
+                        plugin.getPartyManager().openPartyInventory(player, PartyGui.Type.SEARCH);
                     });
                 } else {
                     party.addPlayer(player);
                     player.sendMessage(ChatColor.GREEN + "파티에 가입되었습니다.");
                     playerData.removeTempData("Party_PasswordCheck");
                     Bukkit.getScheduler().runTask(plugin, ()-> {
-                        plugin.getPartyManager().openPartyInventory(player, 1);
+                        plugin.getPartyManager().openPartyInventory(player, PartyGui.Type.INFO);
                     });
                 }
             } else {
                 player.sendMessage(ChatColor.RED + "비밀번호가 일치하지 않습니다.");
                 playerData.removeTempData("Party_PasswordCheck");
                 Bukkit.getScheduler().runTask(plugin, ()-> {
-                    plugin.getPartyManager().openPartyInventory(player, 0);
+                    plugin.getPartyManager().openPartyInventory(player, PartyGui.Type.SEARCH);
                 });
             }
         }
@@ -200,7 +200,7 @@ public class PartyMenuEvent implements Listener {
                                 next = 0;
                             }
                             playerData.setTempData("Party_SearchPage", next);
-                            partyManager.openPartyInventory(player, 0);
+                            partyManager.openPartyInventory(player, PartyGui.Type.SEARCH);
                         }
                         case "Previous" -> {
                             int previous = current - 1;
@@ -208,14 +208,14 @@ public class PartyMenuEvent implements Listener {
                                 previous = maxPage;
                             }
                             playerData.setTempData("Party_SearchPage", previous);
-                            partyManager.openPartyInventory(player, 0);
+                            partyManager.openPartyInventory(player, PartyGui.Type.SEARCH);
                         }
                         case "Create" -> {
                             if (playerData.hasParty()) {
                                 player.sendMessage(ChatColor.RED + "이미 파티에 속해있습니다.");
                                 return;
                             }
-                            partyManager.openPartyInventory(player, 2);
+                            partyManager.openPartyInventory(player, PartyGui.Type.CREATE);
                         }
                         case "Page" -> {
                             return;
@@ -244,7 +244,7 @@ public class PartyMenuEvent implements Listener {
                                         player.sendMessage(ChatColor.RED + "파티 인원이 최대입니다.");
                                     } else {
                                         party.addPlayer(player);
-                                        partyManager.openPartyInventory(player, 1);
+                                        partyManager.openPartyInventory(player, PartyGui.Type.INFO);
                                         player.sendMessage(ChatColor.GREEN + "파티에 가입되었습니다.");
                                     }
                                 } else {
@@ -270,7 +270,7 @@ public class PartyMenuEvent implements Listener {
                     switch (data) {
                         case "BackAndLeave" -> {
                             if (e.isLeftClick()) {
-                                partyManager.openPartyInventory(player, 0);
+                                partyManager.openPartyInventory(player, PartyGui.Type.SEARCH);
                             } else if (e.isRightClick()) {
                                 Party party = playerData.getParty();
                                 if (party != null) {
@@ -287,7 +287,7 @@ public class PartyMenuEvent implements Listener {
                                 Party party = playerData.getParty();
                                 if (party != null) {
                                     if (party.getLeaderUUID().equals(player.getUniqueId())) {
-                                        partyManager.openPartyInventory(player, 3);
+                                        partyManager.openPartyInventory(player, PartyGui.Type.EDIT);
                                     } else {
                                         player.sendMessage(ChatColor.RED + "파티장만 이용가능합니다.");
                                     }
@@ -310,7 +310,7 @@ public class PartyMenuEvent implements Listener {
                                 player.closeInventory();
                                 return;
                             }
-                            if (party.getLeaderUUID().equals(player.getUniqueId())) {
+                            if (!party.getLeaderUUID().equals(player.getUniqueId())) {
                                 player.sendMessage(ChatColor.RED + "파티장만 사용가능한 기능입니다.");
                                 return;
                             }
@@ -345,7 +345,7 @@ public class PartyMenuEvent implements Listener {
                 if (data != null) {
                     switch (data) {
                         case "Back" -> {
-                            partyManager.openPartyInventory(player, 0);
+                            partyManager.openPartyInventory(player, PartyGui.Type.SEARCH);
                         }
                         case "Create" -> {
                             partyManager.createParty(playerData);
@@ -422,7 +422,7 @@ public class PartyMenuEvent implements Listener {
                                 }
                             }
                             if (u) {
-                                partyManager.openPartyInventory(player, 2);
+                                partyManager.openPartyInventory(player, PartyGui.Type.CREATE);
                             }
                         }
                     }
@@ -432,7 +432,7 @@ public class PartyMenuEvent implements Listener {
                 if (data != null) {
                     switch (data) {
                         case "Back" -> {
-                            partyManager.openPartyInventory(player, 1);
+                            partyManager.openPartyInventory(player, PartyGui.Type.INFO);
                         }
                         default -> {
                             Party party = playerData.getParty();
@@ -506,7 +506,7 @@ public class PartyMenuEvent implements Listener {
                                 }
                             }
                             if (u) {
-                                partyManager.openPartyInventory(player, 3);
+                                partyManager.openPartyInventory(player, PartyGui.Type.EDIT);
                             }
                         }
                     }
