@@ -18,9 +18,15 @@ public class PartyManager extends CustomGuiManager {
 
     public PartyManager(TowerRpg plugin) {
         this.plugin = plugin;
+        reloadVariables();
     }
 
     private final Map<UUID, Party> partyMap = new LinkedHashMap<>();
+    private int partyMaxPlayer = 4;
+
+    public void reloadVariables() {
+        this.partyMaxPlayer = plugin.getConfig().contains("Setting.Party.MaxPlayer") ? plugin.getConfig().getInt("Setting.Party.MaxPlayer") : 4;
+    }
 
     public void openPartyInventory(Player player, PartyGui.Type type) { // 0 = 파티 찾기, 1 =  파티 정보, 2 = 파티 생성, 3 = 파티 옵션 변경
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
@@ -66,6 +72,10 @@ public class PartyManager extends CustomGuiManager {
 
     public void disbandParty(Party party) {
         removeParty(party.getPartyID());
+    }
+
+    public int getPartyMaxPlayer() {
+        return partyMaxPlayer;
     }
 
 }

@@ -5,9 +5,9 @@ public enum DungeonType {
     BEGINNING_TOWER("beginning_tower", "시작의 탑",5, 4);
 
     private final String key;
-    private final String displayName;
-    private final int totalFloor;
-    private final int maxPlayer;
+    private String displayName;
+    private int totalFloor;
+    private int maxPlayer;
 
     DungeonType(String key, String displayName, int totalFloor, int maxPlayer) {
         this.key = key;
@@ -24,12 +24,23 @@ public enum DungeonType {
         return displayName;
     }
 
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     public int getTotalFloor() {
         return totalFloor;
+    }
+
+    public void setTotalFloor(int totalFloor) {
+        this.totalFloor = totalFloor;
     }
 
     public int getMaxPlayer() {
         return maxPlayer;
     }
 
+    public void setMaxPlayer(int maxPlayer) {
+        this.maxPlayer = maxPlayer;
+    }
 }

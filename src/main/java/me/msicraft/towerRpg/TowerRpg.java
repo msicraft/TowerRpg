@@ -100,6 +100,8 @@ public final class TowerRpg extends JavaPlugin {
 
     public void reloadVariables() {
         reloadConfig();
+        partyManager.reloadVariables();
+        dungeonManager.reloadVariables();
         prefixManager.getPrefixDataFile().reloadConfig();
         shopManager.getShopDataFile().reloadConfig();
 

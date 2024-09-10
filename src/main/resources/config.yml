@@ -8,3 +8,10 @@ Setting:
     SellPriceChangeQuantity: 64
     BuyPriceChangePercent: 0.1
     SellPriceChangePercent: 0.1
+  Party:
+    MaxPlayer: 4
+  Dungeon:
+    beginning_tower: #dungeon key
+      DisplayName: "시작의 탑"
+      TotalFloor: 5
+      MaxPlayer: 4
