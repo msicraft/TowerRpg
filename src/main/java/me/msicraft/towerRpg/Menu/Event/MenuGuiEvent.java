@@ -95,7 +95,7 @@ public class MenuGuiEvent implements Listener {
                                     }
                                 }
                                 case "Dungeon" -> {
-                                    plugin.getDungeonManager().openDugeonInventory(DungeonType.BEGINNING_TOWER, player);
+                                    plugin.getDungeonManager().openDungeonInventory(DungeonType.BEGINNING_TOWER, player);
                                 }
                             }
                         }

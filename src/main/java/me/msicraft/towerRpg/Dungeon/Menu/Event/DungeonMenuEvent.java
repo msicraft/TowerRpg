@@ -85,7 +85,7 @@ public class DungeonMenuEvent implements Listener {
                                     next = 0;
                                 }
                                 playerData.setTempData(pageKey, next);
-                                dungeonManager.openDugeonInventory(dungeonType, player);
+                                dungeonManager.openDungeonInventory(dungeonType, player);
                             }
                             case "Previous" -> {
                                 int previous = current - 1;
@@ -93,13 +93,19 @@ public class DungeonMenuEvent implements Listener {
                                     previous = maxPage;
                                 }
                                 playerData.setTempData(pageKey, previous);
-                                dungeonManager.openDugeonInventory(dungeonType, player);
+                                dungeonManager.openDungeonInventory(dungeonType, player);
                             }
                             default -> {
                                 if (playerData.hasParty()) {
                                     Party party = playerData.getParty();
                                     if (!party.getLeaderUUID().equals(player.getUniqueId())) {
                                         player.sendMessage(ChatColor.RED + "파티장만 입장신청이 가능합니다.");
+                                        return;
+                                    }
+                                    int maxPlayerSize = dungeonType.getMaxPlayer();
+                                    int partySize = party.getMembers().size();
+                                    if (partySize > maxPlayerSize) {
+                                        player.sendMessage(ChatColor.RED + "파티인원수가 최대 입장가능 인원수보다 많습니다.");
                                         return;
                                     }
                                 }

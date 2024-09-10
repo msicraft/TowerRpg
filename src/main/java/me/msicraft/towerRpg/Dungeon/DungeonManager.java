@@ -1,7 +1,11 @@
 package me.msicraft.towerRpg.Dungeon;
 
 import me.msicraft.towerRpg.Dungeon.Data.DungeonType;
+import me.msicraft.towerRpg.Dungeon.Menu.DungeonGui;
+import me.msicraft.towerRpg.Menu.GuiType;
+import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.TowerRpg;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +50,13 @@ public class DungeonManager {
         if (isChange) {
             plugin.saveConfig();
         }
+    }
+
+    public void openDungeonInventory(DungeonType dungeonType, Player player) {
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+        DungeonGui dungeonGui = (DungeonGui) playerData.getCustomGui(GuiType.DUNGEON);
+        player.openInventory(dungeonGui.getInventory());
+        dungeonGui.setFloorSelectMenu(dungeonType, player);
     }
 
 }
