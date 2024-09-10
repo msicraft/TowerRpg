@@ -108,6 +108,9 @@ public class DungeonMenuEvent implements Listener {
                                         player.sendMessage(ChatColor.RED + "파티인원수가 최대 입장가능 인원수보다 많습니다.");
                                         return;
                                     }
+                                } else {
+                                    player.sendMessage(ChatColor.RED + "파티상태로 입장해주시기 바랍니다.");
+                                    return;
                                 }
                                 String dungeonName = dungeonType.getKey() + "_" + data;
                                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"md play " + dungeonName + " " + player.getName());
@@ -116,7 +119,6 @@ public class DungeonMenuEvent implements Listener {
                     }
                 }
             }
-
         }
     }
 

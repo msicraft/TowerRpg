@@ -26,7 +26,6 @@ public class DungeonManager {
             dungeonKeys.add(dungeonType.getKey());
         }
 
-        boolean isChange = false;
         for (String key : dungeonKeys) {
             String path = "Setting.Dungeon." + key;
             try {
@@ -35,20 +34,9 @@ public class DungeonManager {
                     dungeonType.setDisplayName(plugin.getConfig().contains(path + ".DisplayName") ? plugin.getConfig().getString(path + ".DisplayName") : dungeonType.getDisplayName());
                     dungeonType.setTotalFloor(plugin.getConfig().contains(path + ".TotalFloor") ? plugin.getConfig().getInt(path + ".TotalFloor") : 0);
                     dungeonType.setMaxPlayer(plugin.getConfig().contains(path + ".MaxPlayer") ? plugin.getConfig().getInt(path + ".MaxPlayer") : 1);
-                } else {
-                    if (!isChange) {
-                        isChange = true;
-                    }
-                    plugin.getConfig().set(path + ".DisplayName", dungeonType.getDisplayName());
-                    plugin.getConfig().set(path + ".TotalFloor", dungeonType.getTotalFloor());
-                    plugin.getConfig().set(path + ".MaxPlayer", dungeonType.getMaxPlayer());
                 }
             } catch (IllegalArgumentException ignored) {
             }
-        }
-
-        if (isChange) {
-            plugin.saveConfig();
         }
     }
 
