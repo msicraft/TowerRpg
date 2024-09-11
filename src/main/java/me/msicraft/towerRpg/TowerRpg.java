@@ -17,6 +17,7 @@ import me.msicraft.towerRpg.Prefix.PrefixManager;
 import me.msicraft.towerRpg.Shop.Menu.Event.ShopMenuEvent;
 import me.msicraft.towerRpg.Shop.ShopManager;
 import net.milkbowl.vault.economy.Economy;
+import net.playavalon.mythicdungeons.api.MythicDungeonsService;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
@@ -144,6 +145,11 @@ public final class TowerRpg extends JavaPlugin {
         economy = rsp.getProvider();
         return economy != null;
     }
+
+    public static MythicDungeonsService mythicDungeonsAPI() {
+        return Bukkit.getServer().getServicesManager().load(MythicDungeonsService.class);
+    }
+
 
     public Economy getEconomy() {
         return economy;

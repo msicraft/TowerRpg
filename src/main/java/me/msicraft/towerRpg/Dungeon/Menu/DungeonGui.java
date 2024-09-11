@@ -62,7 +62,7 @@ public class DungeonGui extends CustomGui {
             lore.clear();
             int floor = i + 1;
             String key = dungeonType.getKey() + "_" + floor;
-            lore.add(ChatColor.YELLOW + "입장 가능인원수: " + ChatColor.GREEN + dungeonType.getMaxPlayer());
+            lore.add(ChatColor.YELLOW + "최대 인원: " + ChatColor.GREEN + dungeonType.getMaxPlayer());
             lore.add("");
             if (playerData.hasData(key)) {
                 long lastClearTime = (long) playerData.getData(key);
@@ -77,7 +77,6 @@ public class DungeonGui extends CustomGui {
                     selectKey, String.valueOf(floor));
 
             gui.setItem(guiCount, itemStack);
-
             guiCount++;
             if (guiCount >= 45) {
                 break;

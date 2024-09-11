@@ -231,6 +231,12 @@ public class PartyGui extends CustomGui {
                 List.of(ChatColor.YELLOW + "좌 클릭: 뒤로", ChatColor.YELLOW + "우 클릭: 탈퇴"), -1,
                 partyInfoKey, "BackAndLeave");
         gui.setItem(45, itemStack);
+        /*
+        itemStack = GuiUtil.createItemStack(Material.WRITABLE_BOOK, "파티 초대", GuiUtil.EMPTY_LORE, -1,
+                partyInfoKey, "Invite");
+        gui.setItem(49, itemStack);
+
+         */
 
         List<String> infoLore = new ArrayList<>();
         infoLore.add(ChatColor.YELLOW + "좌 클릭: 파티 옵션 변경 (파티장 기능)");
@@ -254,7 +260,7 @@ public class PartyGui extends CustomGui {
                 lore.add(Component.text(ChatColor.YELLOW + "좌 클릭: 파티원 추방 (파티장 기능)"));
                 lore.add(Component.text(ChatColor.YELLOW + "우 클릭: 파티장 위임 (파티장 가능)"));
                 lore.add(Component.text(""));
-                if (party.getLeaderUUID() == member) {
+                if (party.getLeaderUUID().equals(member)) {
                     lore.add(Component.text(ChatColor.GREEN + "파티장"));
                 } else {
                     lore.add(Component.text(ChatColor.GREEN + "파티원"));

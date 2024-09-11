@@ -1,5 +1,5 @@
 Setting:
-  DisableEntityVehicleEnter: false
+  DisableEntityVehicleEnter: true
   Shop:
     UpdateTicks: 72000
     MaxPricePercent: 0.25
@@ -13,5 +13,5 @@ Setting:
   Dungeon:
     beginning_tower: #dungeon key
       DisplayName: "시작의 탑"
-      TotalFloor: 5
+      TotalFloor: 1
       MaxPlayer: 4

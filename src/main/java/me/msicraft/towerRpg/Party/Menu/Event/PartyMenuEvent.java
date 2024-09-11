@@ -337,6 +337,7 @@ public class PartyMenuEvent implements Listener {
                                 party.setLeader(uuid);
                                 targetPlayer.sendMessage(ChatColor.GREEN + "파티장이 되었습니다.");
                             }
+                            partyManager.openPartyInventory(player, PartyGui.Type.INFO);
                         }
                     }
                 }
