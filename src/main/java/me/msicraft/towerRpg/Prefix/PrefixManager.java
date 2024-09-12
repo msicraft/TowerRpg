@@ -38,14 +38,14 @@ public class PrefixManager {
         if (section != null) {
             Set<String> sets = section.getKeys(false);
             for (String id : sets) {
+                String path = "Prefix." + id;
                 Prefix prefix;
+                String displayName = config.getString(path + ".DisplayName");
+                List<String> statList = config.getStringList(path + ".Stat");
                 if (prefixMap.containsKey(id)) {
                     prefix = prefixMap.get(id);
-                    prefix.update(prefixDataFile);
+                    prefix.update(displayName, statList);
                 } else {
-                    String path = "Prefix." + id;
-                    String displayName = config.getString(path + ".DisplayName");
-                    List<String> statList = config.getStringList(path + ".Stat");
                     prefix = new Prefix(id, displayName, statList);
                 }
                 prefixMap.put(id, prefix);
@@ -80,7 +80,9 @@ public class PrefixManager {
             }
         }
 
-        Bukkit.getPluginManager().callEvent(new PrefixChangeEvent(player, prefix));
+        Bukkit.getScheduler().runTask(plugin, ()-> {
+            Bukkit.getPluginManager().callEvent(new PrefixChangeEvent(player, prefix));
+        });
     }
 
     public Set<Prefix> getPrefixes() {
