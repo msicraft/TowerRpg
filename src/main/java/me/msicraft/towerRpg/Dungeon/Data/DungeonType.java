@@ -2,7 +2,7 @@ package me.msicraft.towerRpg.Dungeon.Data;
 
 public enum DungeonType {
 
-    BEGINNING_TOWER("beginning_tower", "시작의 탑",5, 4);
+    BEGINNING_TOWER("beginning_tower", "시작의 탑",1, 1);
 
     private final String key;
     private String displayName;

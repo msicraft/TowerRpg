@@ -3,6 +3,7 @@ package me.msicraft.towerRpg.Command;
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
 import me.msicraft.towerRpg.Shop.ShopManager;
 import me.msicraft.towerRpg.TowerRpg;
+import net.Indyuce.mmocore.MMOCore;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -35,6 +36,12 @@ public class MainCommand implements CommandExecutor {
                         plugin.reloadVariables();
                         sender.sendMessage(ChatColor.GREEN + "플러그인 구성이 리로드되었습니다.");
                         return true;
+                    }
+                    case "test" -> {
+                        MMOCore.plugin.skillManager.getAll().forEach(registeredSkill -> {
+                            System.out.println("Id: " + registeredSkill.getHandler().getId() + " Name: " + registeredSkill.getName()
+                                    + " Lore: " + registeredSkill.getLore());
+                        });
                     }
                     case "shop" -> {
                         ShopManager shopManager = plugin.getShopManager();

@@ -1,5 +1,6 @@
 package me.msicraft.towerRpg;
 
+import me.msicraft.towerRpg.API.MythicMobs.MythicMobsRegisterEvent;
 import me.msicraft.towerRpg.Command.MainCommand;
 import me.msicraft.towerRpg.Command.MainTabCompleter;
 import me.msicraft.towerRpg.Dungeon.DungeonManager;
@@ -16,6 +17,8 @@ import me.msicraft.towerRpg.Prefix.Data.Prefix;
 import me.msicraft.towerRpg.Prefix.PrefixManager;
 import me.msicraft.towerRpg.Shop.Menu.Event.ShopMenuEvent;
 import me.msicraft.towerRpg.Shop.ShopManager;
+import me.msicraft.towerRpg.SkillBook.Event.SkillBookRelatedEvent;
+import me.msicraft.towerRpg.SkillBook.SkillBookManager;
 import net.milkbowl.vault.economy.Economy;
 import net.playavalon.mythicdungeons.api.MythicDungeonsService;
 import org.bukkit.Bukkit;
@@ -49,6 +52,7 @@ public final class TowerRpg extends JavaPlugin {
     private ShopManager shopManager;
     private DungeonManager dungeonManager;
     private PartyManager partyManager;
+    private SkillBookManager skillBookManager;
 
     @Override
     public void onEnable() {
@@ -60,6 +64,7 @@ public final class TowerRpg extends JavaPlugin {
         this.shopManager = new ShopManager(this);
         this.dungeonManager = new DungeonManager(this);
         this.partyManager = new PartyManager(this);
+        this.skillBookManager = new SkillBookManager(this);
 
         if (!setupEconomy() ) {
             getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
@@ -91,6 +96,8 @@ public final class TowerRpg extends JavaPlugin {
         pluginManager.registerEvents(new DungeonMenuEvent(this), this);
         pluginManager.registerEvents(new PartyMenuEvent(this), this);
         pluginManager.registerEvents(new DungeonRelatedEvent(this), this);
+        pluginManager.registerEvents(new SkillBookRelatedEvent(this), this);
+        pluginManager.registerEvents(new MythicMobsRegisterEvent(this), this);
     }
 
     public void registeredCommands() {
@@ -118,6 +125,7 @@ public final class TowerRpg extends JavaPlugin {
 
         shopManager.reloadVariables();
         EntityRelatedEvent.getInstance().reloadVariables();
+        skillBookManager.reloadVariables();
     }
 
     private void createConfigFile() {
@@ -173,6 +181,10 @@ public final class TowerRpg extends JavaPlugin {
 
     public PartyManager getPartyManager() {
         return partyManager;
+    }
+
+    public SkillBookManager getSkillBookManager() {
+        return skillBookManager;
     }
 
 }

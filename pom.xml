@@ -81,6 +81,12 @@
             <name>Aestrus's Repository</name>
             <url>https://maven.aestrus.io/releases</url>
         </repository>
+        <repository>
+            <id>nexus</id>
+            <name>Lumine Releases</name>
+            <url>https://mvn.lumine.io/repository/maven-public/</url>
+        </repository>
+
     </repositories>
 
     <dependencies>
@@ -113,6 +119,18 @@
             <groupId>net.playavalon</groupId>
             <artifactId>MythicDungeons</artifactId>
             <version>1.3.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.Indyuce</groupId>
+            <artifactId>MMOCore-API</artifactId>
+            <version>1.12.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lumine</groupId>
+            <artifactId>Mythic-Dist</artifactId>
+            <version>5.6.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
