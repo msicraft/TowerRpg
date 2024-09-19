@@ -7,9 +7,6 @@ import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
 import me.msicraft.towerRpg.TowerRpg;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DungeonManager {
 
     private final TowerRpg plugin;
@@ -21,21 +18,12 @@ public class DungeonManager {
 
     public void reloadVariables() {
         DungeonType[] dungeonTypes = DungeonType.values();
-        List<String> dungeonKeys = new ArrayList<>(dungeonTypes.length);
         for (DungeonType dungeonType : dungeonTypes) {
-            dungeonKeys.add(dungeonType.getKey());
-        }
-
-        for (String key : dungeonKeys) {
-            String path = "Setting.Dungeon." + key;
-            try {
-                DungeonType dungeonType = DungeonType.valueOf(key.toUpperCase());
-                if (plugin.getConfig().contains(path)) {
-                    dungeonType.setDisplayName(plugin.getConfig().contains(path + ".DisplayName") ? plugin.getConfig().getString(path + ".DisplayName") : dungeonType.getDisplayName());
-                    dungeonType.setTotalFloor(plugin.getConfig().contains(path + ".TotalFloor") ? plugin.getConfig().getInt(path + ".TotalFloor") : 0);
-                    dungeonType.setMaxPlayer(plugin.getConfig().contains(path + ".MaxPlayer") ? plugin.getConfig().getInt(path + ".MaxPlayer") : 1);
-                }
-            } catch (IllegalArgumentException ignored) {
+            String path = "Setting.Dungeon." + dungeonType.getKey();
+            if (plugin.getConfig().contains(path)) {
+                dungeonType.setDisplayName(plugin.getConfig().contains(path + ".DisplayName") ? plugin.getConfig().getString(path + ".DisplayName") : dungeonType.getDisplayName());
+                dungeonType.setTotalFloor(plugin.getConfig().contains(path + ".TotalFloor") ? plugin.getConfig().getInt(path + ".TotalFloor") : 0);
+                dungeonType.setMaxPlayer(plugin.getConfig().contains(path + ".MaxPlayer") ? plugin.getConfig().getInt(path + ".MaxPlayer") : 1);
             }
         }
     }

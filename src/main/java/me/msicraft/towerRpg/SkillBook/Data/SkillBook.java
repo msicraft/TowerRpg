@@ -42,7 +42,7 @@ public class SkillBook {
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
         dataContainer.set(SKILL_BOOK_ID_KEY, PersistentDataType.STRING, id);
 
-        itemMeta.displayName(Component.text(registeredSkill.getName() + ChatColor.GOLD + " (스킬 북)"));
+        itemMeta.displayName(Component.text(registeredSkill.getName() + ChatColor.BOLD + ChatColor.GOLD + " (스킬 북)"));
         List<String> lore = registeredSkill.getLore();
         List<Component> list = new ArrayList<>();
         list.add(Component.text(ChatColor.YELLOW + "스킬 이름: " + registeredSkill.getName()));

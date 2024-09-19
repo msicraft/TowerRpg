@@ -191,6 +191,10 @@ public class PlayerData {
         return party != null;
     }
 
+    public boolean canEnterDungeon(String dungeonNameKey) {
+        return hasData(dungeonNameKey);
+    }
+
     @NotNull
     public TempPartyInfo getTempPartyInfo() {
         if (tempPartyInfo == null) {

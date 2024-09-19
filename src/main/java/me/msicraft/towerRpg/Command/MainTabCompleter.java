@@ -23,7 +23,7 @@ public class MainTabCompleter implements TabCompleter {
         if (command.getName().equals("towerrpg")) {
             if (args.length == 1) {
                 if (sender.isOp()) {
-                    return List.of("reload", "shop");
+                    return List.of("reload", "shop", "skillbook");
                 }
             }
             if (args.length == 2) {
@@ -31,6 +31,8 @@ public class MainTabCompleter implements TabCompleter {
                     String var = args[0];
                     if (var.equalsIgnoreCase("shop")) {
                         return List.of("register", "unregister");
+                    } else if (var.equalsIgnoreCase("skillbook")) {
+                        return plugin.getSkillBookManager().getSkillIdsToList();
                     }
                 }
             }
@@ -39,10 +41,17 @@ public class MainTabCompleter implements TabCompleter {
                     String var = args[1];
                     if (var.equalsIgnoreCase("unregister")) {
                         return new ArrayList<>(plugin.getShopManager().getInternalNameList());
+                    } else if (var.equalsIgnoreCase("skillbook")) {
+                        return List.of("<amount>");
                     }
                 }
             }
+            if (args.length == 4) {
+                if (sender.isOp()) {
+                    String var = args[1];
+                }
+            }
         }
-        return List.of();
+        return null;
     }
 }

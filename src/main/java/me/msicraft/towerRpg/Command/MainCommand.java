@@ -2,8 +2,10 @@ package me.msicraft.towerRpg.Command;
 
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
 import me.msicraft.towerRpg.Shop.ShopManager;
+import me.msicraft.towerRpg.SkillBook.Data.SkillBook;
 import me.msicraft.towerRpg.TowerRpg;
 import net.Indyuce.mmocore.MMOCore;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -43,6 +45,34 @@ public class MainCommand implements CommandExecutor {
                                     + " Lore: " + registeredSkill.getLore());
                         });
                     }
+                    case "skillbook" -> {
+                        try {
+                            String skillBookId = args[1];
+                            int amount = Integer.parseInt(args[2]);
+                            Player target = Bukkit.getPlayer(args[3]);
+                            if (target == null) {
+                                if (sender instanceof Player p) {
+                                    target = p;
+                                } else {
+                                    sender.sendMessage(ChatColor.RED + "대상 플레이어가 존재하지않습니다.");
+                                    return false;
+                                }
+                            }
+                            SkillBook skillBook = plugin.getSkillBookManager().getSkillBook(skillBookId);
+                            if (skillBook == null) {
+                                sender.sendMessage(ChatColor.RED + "해당 스킬북이 존재하지 않습니다.");
+                                return false;
+                            }
+                            ItemStack itemStack = skillBook.getItemStack();
+                            for (int i = 0; i < amount; i++) {
+                                target.getInventory().addItem(itemStack);
+                            }
+                            return true;
+                        } catch (ArrayIndexOutOfBoundsException | NumberFormatException  e) {
+                            sender.sendMessage(ChatColor.RED + "/towerrpg skillbook <skillBookId> <amount> <target>");
+                            return false;
+                        }
+                    }
                     case "shop" -> {
                         ShopManager shopManager = plugin.getShopManager();
                         try {
@@ -56,6 +86,7 @@ public class MainCommand implements CommandExecutor {
                                             double basePrice = Double.parseDouble(args[3]);
                                             if (shopManager.hasInternalName(internalName)) {
                                                 player.sendMessage(ChatColor.RED + "이미 존재하는 내부이름입니다");
+                                                return false;
                                             } else {
                                                 FileConfiguration config = shopManager.getShopDataFile().getConfig();
                                                 ShopItem shopItem = new ShopItem(internalName, itemStack, basePrice);
@@ -69,12 +100,14 @@ public class MainCommand implements CommandExecutor {
                                                 config.set(path + ".SellQuantity", shopItem.getSellQuantity());
                                                 shopManager.getShopDataFile().saveConfig();
                                                 player.sendMessage(ChatColor.GREEN + "아이템이 등록되었습니다");
+                                                return true;
                                             }
                                         } else {
                                             player.sendMessage(ChatColor.RED + "공기는 등록할 수 없습니다");
+                                            return false;
                                         }
                                     }
-                                    return true;
+                                    return false;
                                 }
                                 case "unregister" -> {
                                     String internalName = args[2];
@@ -83,17 +116,18 @@ public class MainCommand implements CommandExecutor {
                                         shopManager.getShopDataFile().getConfig().set("Items." + internalName, null);
                                         shopManager.getShopDataFile().saveConfig();
                                         sender.sendMessage(ChatColor.GREEN + "상점 아이템이 제거되었습니다.");
+                                        return true;
                                     } else {
                                         sender.sendMessage(ChatColor.RED + "해당 내부이름이 존재하지 않습니다");
+                                        return false;
                                     }
-                                    return true;
                                 }
                             }
                         } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
                             sender.sendMessage(ChatColor.RED + "/towerrpg shop [register|unregister] [internalName] [base_price]");
-                            return true;
+                            return false;
                         }
-                        return true;
+                        return false;
                     }
                 }
             }

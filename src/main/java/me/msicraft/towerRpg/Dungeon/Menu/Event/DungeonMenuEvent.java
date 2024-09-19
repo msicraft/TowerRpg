@@ -113,7 +113,11 @@ public class DungeonMenuEvent implements Listener {
                                     return;
                                 }
                                 String dungeonName = dungeonType.getKey() + "_" + data;
-                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"md play " + dungeonName + " " + player.getName());
+                                if (playerData.canEnterDungeon(dungeonName)) {
+                                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "md play " + dungeonName + " " + player.getName());
+                                } else {
+                                    player.sendMessage(ChatColor.RED + "이전 층을 클리어해야 입장가능합니다.");
+                                }
                             }
                         }
                     }
