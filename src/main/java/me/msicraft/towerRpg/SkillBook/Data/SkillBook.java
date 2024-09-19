@@ -2,6 +2,7 @@ package me.msicraft.towerRpg.SkillBook.Data;
 
 import me.msicraft.towerRpg.TowerRpg;
 import me.msicraft.towerRpg.Utils.GuiUtil;
+import me.msicraft.towerRpg.Utils.MessageUtil;
 import net.Indyuce.mmocore.skill.RegisteredSkill;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -45,10 +46,20 @@ public class SkillBook {
         itemMeta.displayName(Component.text(registeredSkill.getName() + ChatColor.BOLD + ChatColor.GOLD + " (스킬 북)"));
         List<String> lore = registeredSkill.getLore();
         List<Component> list = new ArrayList<>();
-        list.add(Component.text(ChatColor.YELLOW + "스킬 이름: " + registeredSkill.getName()));
+        list.add(Component.text(ChatColor.YELLOW + "스킬 이름: " + ChatColor.AQUA + registeredSkill.getName()));
         list.add(Component.text(ChatColor.YELLOW + "우 클릭: 스킬 배우기(레벨 업)"));
         list.add(Component.text(""));
         for (String s : lore) {
+            if (s.contains("{percent}")) {
+                s = s.replaceAll("\\{percent}", "x" );
+            } else if (s.contains("{cooldown}")) {
+                s = s.replaceAll("\\{cooldown}", "x" );
+            } else if (s.contains("{mana}")) {
+                s = s.replaceAll("\\{mana}", "x" );
+            } else if (s.contains("{stamina}")) {
+                s = s.replaceAll("\\{stamina}", "x");
+            }
+            s = MessageUtil.translateColorCodes(s);
             list.add(Component.text(s));
         }
         itemMeta.lore(list);

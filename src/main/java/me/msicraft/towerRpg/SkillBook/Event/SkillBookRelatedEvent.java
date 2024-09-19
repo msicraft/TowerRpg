@@ -36,8 +36,8 @@ public class SkillBookRelatedEvent implements Listener {
                 PlayerData mPlayerData = PlayerData.get(player.getUniqueId());
                 PlayerClass playerClass = mPlayerData.getProfess();
                 RegisteredSkill registeredSkill = skillBook.getRegisteredSkill();
-                if (playerClass.hasSkill(registeredSkill)) {
-                    ClassSkill classSkill = playerClass.getSkill(registeredSkill);
+                ClassSkill classSkill = playerClass.getSkill(registeredSkill);
+                if (mPlayerData.hasUnlocked(classSkill)) {
                     int currentLevel = mPlayerData.getSkillLevel(registeredSkill);
                     int maxLevel = classSkill.getMaxLevel();
                     if (currentLevel >= maxLevel) {
@@ -48,8 +48,8 @@ public class SkillBookRelatedEvent implements Listener {
                     mPlayerData.setSkillLevel(registeredSkill, cal);
                     player.sendMessage(ChatColor.YELLOW + registeredSkill.getName() + ChatColor.GREEN + " 의 스킬레벨이 상승하였습니다.");
                 } else {
-                    mPlayerData.setSkillLevel(registeredSkill, 1);
-                    player.sendMessage(ChatColor.YELLOW + registeredSkill.getName() + ChatColor.GREEN + " 스킬을 배웠습니다.");
+                    mPlayerData.unlock(classSkill);
+                    player.sendMessage(ChatColor.AQUA + registeredSkill.getName() + ChatColor.GREEN + " 스킬을 배웠습니다.");
                 }
                 itemStack.setAmount(0);
             }

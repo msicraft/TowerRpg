@@ -22,7 +22,7 @@ public class SkillBookDrop implements IItemDrop {
     public AbstractItemStack getDrop(DropMetadata dropMetadata, double v) {
         if (skillBookId != null) {
             SkillBookManager skillBookManager = TowerRpg.getPlugin().getSkillBookManager();
-            SkillBook skillBook = skillBookManager.getSkillBook(skillBookId);
+            SkillBook skillBook = skillBookManager.getSkillBook(skillBookId.toUpperCase());
             if (skillBook != null) {
                 return new BukkitItemStack(skillBook.getItemStack());
             }

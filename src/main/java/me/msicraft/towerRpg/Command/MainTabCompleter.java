@@ -38,17 +38,19 @@ public class MainTabCompleter implements TabCompleter {
             }
             if (args.length == 3) {
                 if (sender.isOp()) {
-                    String var = args[1];
-                    if (var.equalsIgnoreCase("unregister")) {
-                        return new ArrayList<>(plugin.getShopManager().getInternalNameList());
-                    } else if (var.equalsIgnoreCase("skillbook")) {
+                    String var = args[0];
+                    String var2 = args[1];
+                    if (var.equalsIgnoreCase("skillbook")) {
                         return List.of("<amount>");
+                    }
+                    if (var2.equalsIgnoreCase("unregister")) {
+                        return new ArrayList<>(plugin.getShopManager().getInternalNameList());
                     }
                 }
             }
             if (args.length == 4) {
                 if (sender.isOp()) {
-                    String var = args[1];
+                    String var2 = args[1];
                 }
             }
         }

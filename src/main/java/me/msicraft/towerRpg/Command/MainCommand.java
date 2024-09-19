@@ -4,7 +4,8 @@ import me.msicraft.towerRpg.Shop.Data.ShopItem;
 import me.msicraft.towerRpg.Shop.ShopManager;
 import me.msicraft.towerRpg.SkillBook.Data.SkillBook;
 import me.msicraft.towerRpg.TowerRpg;
-import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmocore.api.player.profess.PlayerClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -40,10 +41,10 @@ public class MainCommand implements CommandExecutor {
                         return true;
                     }
                     case "test" -> {
-                        MMOCore.plugin.skillManager.getAll().forEach(registeredSkill -> {
-                            System.out.println("Id: " + registeredSkill.getHandler().getId() + " Name: " + registeredSkill.getName()
-                                    + " Lore: " + registeredSkill.getLore());
-                        });
+                        if (sender instanceof Player player) {
+                            PlayerData mPlayerData = PlayerData.get(player.getUniqueId());
+                            PlayerClass playerClass = mPlayerData.getProfess();
+                        }
                     }
                     case "skillbook" -> {
                         try {
