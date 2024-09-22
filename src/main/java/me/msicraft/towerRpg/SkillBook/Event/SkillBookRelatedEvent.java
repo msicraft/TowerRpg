@@ -46,10 +46,10 @@ public class SkillBookRelatedEvent implements Listener {
                     }
                     int cal = currentLevel + 1;
                     mPlayerData.setSkillLevel(registeredSkill, cal);
-                    player.sendMessage(ChatColor.YELLOW + registeredSkill.getName() + ChatColor.GREEN + " 의 스킬레벨이 상승하였습니다.");
+                    player.sendMessage(ChatColor.AQUA + "(" + registeredSkill.getName() + ")" + ChatColor.GREEN + " 스킬레벨이 상승하였습니다.");
                 } else {
                     mPlayerData.unlock(classSkill);
-                    player.sendMessage(ChatColor.AQUA + registeredSkill.getName() + ChatColor.GREEN + " 스킬을 배웠습니다.");
+                    player.sendMessage(ChatColor.AQUA + "(" + registeredSkill.getName() + ")" + ChatColor.GREEN + " 스킬을 배웠습니다.");
                 }
                 itemStack.setAmount(0);
             }
