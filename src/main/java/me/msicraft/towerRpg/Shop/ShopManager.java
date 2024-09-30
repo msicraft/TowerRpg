@@ -100,8 +100,8 @@ public class ShopManager extends CustomGuiManager {
 
     public void saveShopData() {
         FileConfiguration config = shopDataFile.getConfig();
-
-        for (String key : shopItemMap.keySet()) {
+        Set<String> keySets = shopItemMap.keySet();
+        for (String key : keySets) {
             ShopItem shopItem = shopItemMap.get(key);
             String path = "Items." + key;
             config.set(path + ".ItemStack", shopItem.getItemStack());
@@ -110,8 +110,8 @@ public class ShopManager extends CustomGuiManager {
             config.set(path + ".Price", shopItem.getPrice(false));
             config.set(path + ".BuyQuantity", shopItem.getBuyQuantity());
             config.set(path + ".SellQuantity", shopItem.getSellQuantity());
+            config.set(path + ".UseStaticPrice", shopItem.useStaticPrice());
         }
-
         shopDataFile.saveConfig();
     }
 
@@ -124,11 +124,12 @@ public class ShopManager extends CustomGuiManager {
             for (String key : internalNames) {
                 String path = "Items." + key;
                 ItemStack itemStack = config.getItemStack(path + ".ItemStack");
-                int stock = config.getInt(path + ".Stock");
-                double basePrice = config.getDouble(path + ".BasePrice");
-                double price = config.getDouble(path + ".Price");
-                int buyQuantity = config.getInt(path + ".BuyQuantity");
-                int sellQuantity = config.getInt(path + ".SellQuantity");
+                int stock = config.getInt(path + ".Stock", 0);
+                double basePrice = config.getDouble(path + ".BasePrice", -1);
+                double price = config.getDouble(path + ".Price", 0);
+                int buyQuantity = config.getInt(path + ".BuyQuantity", 0);
+                int sellQuantity = config.getInt(path + ".SellQuantity", 0);
+                boolean useStaticPrice = config.getBoolean(path + ".UseStaticPrice", false);
                 ShopItem shopItem;
                 if (shopItemMap.containsKey(key)) {
                     shopItem = shopItemMap.get(key);
@@ -137,10 +138,11 @@ public class ShopManager extends CustomGuiManager {
                     shopItem.setPrice(price);
                     shopItem.setBuyQuantity(buyQuantity);
                     shopItem.setSellQuantity(sellQuantity);
+                    shopItem.setUseStaticPrice(useStaticPrice);
                 } else {
                     shopItem  = new ShopItem(key, itemStack, stock, basePrice, price, buyQuantity, sellQuantity);
+                    shopItem.setUseStaticPrice(useStaticPrice);
                 }
-
                 shopItemMap.put(key, shopItem);
             }
         } else {

@@ -1,6 +1,5 @@
 package me.msicraft.towerRpg.Command;
 
-import me.msicraft.towerRpg.Dungeon.Data.DungeonType;
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
 import me.msicraft.towerRpg.Shop.ShopManager;
 import me.msicraft.towerRpg.SkillBook.Data.SkillBook;
@@ -125,6 +124,7 @@ public class MainCommand implements CommandExecutor {
                                                     config.set(path + ".Price", shopItem.getPrice(false));
                                                     config.set(path + ".BuyQuantity", shopItem.getBuyQuantity());
                                                     config.set(path + ".SellQuantity", shopItem.getSellQuantity());
+                                                    config.set(path + ".UseStaticPrice", shopItem.useStaticPrice());
                                                     shopManager.getShopDataFile().saveConfig();
                                                     player.sendMessage(ChatColor.GREEN + "아이템이 등록되었습니다");
                                                     return true;

@@ -114,6 +114,7 @@ public final class TowerRpg extends JavaPlugin {
         dungeonManager.reloadVariables();
         prefixManager.getPrefixDataFile().reloadConfig();
         shopManager.getShopDataFile().reloadConfig();
+        shopManager.reloadVariables();
 
         prefixManager.update();
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -123,7 +124,7 @@ public final class TowerRpg extends JavaPlugin {
             prefixManager.applyPrefix(player, prefix);
         }
 
-        shopManager.reloadVariables();
+
         EntityRelatedEvent.getInstance().reloadVariables();
         skillBookManager.reloadVariables();
     }

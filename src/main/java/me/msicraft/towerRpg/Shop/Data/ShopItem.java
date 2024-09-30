@@ -6,6 +6,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class ShopItem {
 
+    private boolean useStaticPrice = false;
+
     private final ItemStack itemStack;
     private final String id;
 
@@ -34,6 +36,10 @@ public class ShopItem {
     }
 
     public void updatePrice() {
+        if (useStaticPrice) {
+            price = basePrice;
+            return;
+        }
         ShopManager shopManager = TowerRpg.getPlugin().getShopManager();
 
         double maxPrice = basePrice + (basePrice * shopManager.getMaxPricePercent());
@@ -59,6 +65,14 @@ public class ShopItem {
         }
 
         this.price = Math.min(Math.max(changedPrice, minPrice), maxPrice);
+    }
+
+    public boolean useStaticPrice() {
+        return useStaticPrice;
+    }
+
+    public void setUseStaticPrice(boolean useStaticPrice) {
+        this.useStaticPrice = useStaticPrice;
     }
 
     public String getId() {

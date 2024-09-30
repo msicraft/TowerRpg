@@ -90,6 +90,9 @@ public class ShopGui extends CustomGui {
             String internalName = internalNames.get(a);
             ShopItem shopItem = shopManager.getShopItem(internalName);
             if (shopItem != null) {
+                if (shopItem.getBasePrice() <= 0) {
+                    continue;
+                }
                 int selectCount = 1;
                 Object selectCountObject = playerData.getTempData("ShopInventory_" + internalName + "_SelectCount");
                 if (selectCountObject instanceof Integer) {
@@ -99,7 +102,8 @@ public class ShopGui extends CustomGui {
                 ItemMeta itemMeta = cloneStack.getItemMeta();
                 PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
                 List<Component> lore = new ArrayList<>();
-                lore.add(Component.text(ChatColor.WHITE + "현재 가격: " + shopItem.getPrice(false)));
+                lore.add(Component.text(ChatColor.WHITE + "현재 가격: " + shopItem.getPrice(false)
+                        + " (개당 가격: " + shopItem.getPrice(true) + ")"));
                 lore.add(Component.text(ChatColor.WHITE + "남은 재고: " + shopItem.getStock()));
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.YELLOW + "선택된 개수: " + selectCount));
