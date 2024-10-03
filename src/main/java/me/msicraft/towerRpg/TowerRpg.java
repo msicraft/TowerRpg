@@ -1,8 +1,11 @@
 package me.msicraft.towerRpg;
 
+import me.msicraft.towerRpg.API.MMOItems.MMOItemsPriceManager;
 import me.msicraft.towerRpg.API.MythicMobs.MythicMobsRegisterEvent;
 import me.msicraft.towerRpg.Command.MainCommand;
 import me.msicraft.towerRpg.Command.MainTabCompleter;
+import me.msicraft.towerRpg.DisableItem.DisableItemManger;
+import me.msicraft.towerRpg.DisableItem.Event.DisableItemEvent;
 import me.msicraft.towerRpg.Dungeon.DungeonManager;
 import me.msicraft.towerRpg.Dungeon.Event.DungeonRelatedEvent;
 import me.msicraft.towerRpg.Dungeon.Menu.Event.DungeonMenuEvent;
@@ -53,6 +56,8 @@ public final class TowerRpg extends JavaPlugin {
     private DungeonManager dungeonManager;
     private PartyManager partyManager;
     private SkillBookManager skillBookManager;
+    private DisableItemManger disableItemManger;
+    private MMOItemsPriceManager mmoItemsPriceManager;
 
     @Override
     public void onEnable() {
@@ -65,6 +70,8 @@ public final class TowerRpg extends JavaPlugin {
         this.dungeonManager = new DungeonManager(this);
         this.partyManager = new PartyManager(this);
         this.skillBookManager = new SkillBookManager(this);
+        this.disableItemManger = new DisableItemManger(this);
+        this.mmoItemsPriceManager = new MMOItemsPriceManager(this);
 
         if (!setupEconomy() ) {
             getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
@@ -83,8 +90,6 @@ public final class TowerRpg extends JavaPlugin {
     @Override
     public void onDisable() {
         shopManager.saveShopData();
-
-        getServer().getConsoleSender().sendMessage(PREFIX + ChatColor.RED + "플러그인이 비 활성화 되었습니다");
     }
 
     public void registeredEvents() {
@@ -98,6 +103,7 @@ public final class TowerRpg extends JavaPlugin {
         pluginManager.registerEvents(new DungeonRelatedEvent(this), this);
         pluginManager.registerEvents(new SkillBookRelatedEvent(this), this);
         pluginManager.registerEvents(new MythicMobsRegisterEvent(this), this);
+        pluginManager.registerEvents(new DisableItemEvent(this), this);
     }
 
     public void registeredCommands() {
@@ -112,10 +118,9 @@ public final class TowerRpg extends JavaPlugin {
         reloadConfig();
         partyManager.reloadVariables();
         dungeonManager.reloadVariables();
-        prefixManager.getPrefixDataFile().reloadConfig();
-        shopManager.getShopDataFile().reloadConfig();
         shopManager.reloadVariables();
 
+        prefixManager.getPrefixDataFile().reloadConfig();
         prefixManager.update();
         for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerData playerData = playerDataManager.getPlayerData(player);
@@ -127,6 +132,8 @@ public final class TowerRpg extends JavaPlugin {
 
         EntityRelatedEvent.getInstance().reloadVariables();
         skillBookManager.reloadVariables();
+        disableItemManger.reloadVariables();
+        mmoItemsPriceManager.reloadVariables();
     }
 
     private void createConfigFile() {
@@ -186,6 +193,10 @@ public final class TowerRpg extends JavaPlugin {
 
     public SkillBookManager getSkillBookManager() {
         return skillBookManager;
+    }
+
+    public DisableItemManger getDisableItemManger() {
+        return disableItemManger;
     }
 
 }

@@ -7,7 +7,6 @@ import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainTabCompleter implements TabCompleter {
@@ -44,7 +43,7 @@ public class MainTabCompleter implements TabCompleter {
                         return List.of("<amount>");
                     }
                     if (var2.equalsIgnoreCase("unregister")) {
-                        return new ArrayList<>(plugin.getShopManager().getInternalNameList());
+                        return plugin.getShopManager().getInternalNameList();
                     }
                 }
             }

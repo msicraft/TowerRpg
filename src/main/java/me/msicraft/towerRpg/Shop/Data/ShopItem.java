@@ -1,7 +1,6 @@
 package me.msicraft.towerRpg.Shop.Data;
 
 import me.msicraft.towerRpg.Shop.ShopManager;
-import me.msicraft.towerRpg.TowerRpg;
 import org.bukkit.inventory.ItemStack;
 
 public class ShopItem {
@@ -35,12 +34,11 @@ public class ShopItem {
         this.sellQuantity = sellQuantity;
     }
 
-    public void updatePrice() {
+    public void updatePrice(ShopManager shopManager) {
         if (useStaticPrice) {
             price = basePrice;
             return;
         }
-        ShopManager shopManager = TowerRpg.getPlugin().getShopManager();
 
         double maxPrice = basePrice + (basePrice * shopManager.getMaxPricePercent());
         double minPrice = basePrice + (basePrice * shopManager.getMinPricePercent());

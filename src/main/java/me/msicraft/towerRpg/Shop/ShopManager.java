@@ -18,15 +18,17 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ShopManager extends CustomGuiManager {
 
     private final TowerRpg plugin;
     private final ShopDataFile shopDataFile;
 
-    private final Map<String, ShopItem> shopItemMap = new LinkedHashMap<>();
+    private final Map<String, ShopItem> shopItemMap = new ConcurrentHashMap<>();
+    private final List<String> internalNameList = new ArrayList<>();
 
-    private int updateTicks = 72000;
+    private int updateSeconds = 72000;
     private double maxPricePercent = 0.25;
     private double minPricePercent = 0.25;
     private int buyPriceChangeQuantity = 64;
@@ -56,6 +58,8 @@ public class ShopManager extends CustomGuiManager {
     }
 
     public void reloadVariables() {
+        shopDataFile.reloadConfig();
+
         //shopDataFile = new ShopDataFile(plugin);
         setShopMaintenance(true);
         closeShopInventory();
@@ -68,7 +72,7 @@ public class ShopManager extends CustomGuiManager {
         this.sellPriceChangeQuantity = config.getInt("Setting.Shop.SellPriceChangeQuantity");
         this.buyPriceChangePercent = config.getDouble("Setting.Shop.BuyPriceChangePercent");
         this.sellPriceChangePercent = config.getDouble("Setting.Shop.SellPriceChangePercent");
-        this.updateTicks = config.getInt("Setting.Shop.UpdateTicks");
+        this.updateSeconds = config.getInt("Setting.Shop.UpdateSeconds");
 
         loadShopData();
 
@@ -77,7 +81,7 @@ public class ShopManager extends CustomGuiManager {
             shopTask = null;
             setShopMaintenance(false);
         }
-        shopTask = new ShopTask(plugin, this, updateTicks);
+        shopTask = new ShopTask(plugin, this, updateSeconds);
     }
 
     public void sendMaintenanceMessage(Player player) {
@@ -120,6 +124,7 @@ public class ShopManager extends CustomGuiManager {
 
         ConfigurationSection itemSection = config.getConfigurationSection("Items");
         if (itemSection != null) {
+            internalNameList.clear();
             Set<String> internalNames = itemSection.getKeys(false);
             for (String key : internalNames) {
                 String path = "Items." + key;
@@ -144,9 +149,11 @@ public class ShopManager extends CustomGuiManager {
                     shopItem.setUseStaticPrice(useStaticPrice);
                 }
                 shopItemMap.put(key, shopItem);
+                internalNameList.add(key);
             }
         } else {
             shopItemMap.clear();
+            internalNameList.clear();
             Bukkit.getConsoleSender().sendMessage(TowerRpg.PREFIX + ChatColor.RED + "상점 데이터가 존재하지 않습니다");
         }
     }
@@ -228,12 +235,8 @@ public class ShopManager extends CustomGuiManager {
         shopItemMap.remove(internalName);
     }
 
-    public Set<String> getInternalNameSet() {
-        return shopItemMap.keySet();
-    }
-
     public List<String> getInternalNameList() {
-        return List.copyOf(shopItemMap.keySet());
+        return internalNameList;
     }
 
     public double getMaxPricePercent() {

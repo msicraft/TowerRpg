@@ -119,7 +119,7 @@ public class ShopMenuEvent implements Listener {
             if (dataContainer.has(buyKey)) {
                 String data = dataContainer.get(buyKey, PersistentDataType.STRING);
                 if (data != null) {
-                    int maxPage = shopManager.getInternalNameSet().size() / 45;
+                    int maxPage = shopManager.getInternalNameList().size() / 45;
                     int current = (int) playerData.getTempData("ShopInventory_Page", 1);
                     switch (data) {
                         case "Next" -> {

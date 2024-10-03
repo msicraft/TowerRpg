@@ -6,25 +6,23 @@ import me.msicraft.towerRpg.TowerRpg;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Set;
-
 public class ShopTask extends BukkitRunnable {
 
     private final TowerRpg plugin;
     private final ShopManager shopManager;
-    private final int totalTicks;
-    private int maintenanceTicks = -1;
+    private final int updateSeconds;
+    private int maintenanceSeconds;
 
-    private int ticks = 0;
+    private int seconds = 0;
 
-    public ShopTask(TowerRpg plugin, ShopManager shopManager, int totalTicks) {
+    public ShopTask(TowerRpg plugin, ShopManager shopManager, int updateSeconds) {
         this.plugin = plugin;
         this.shopManager = shopManager;
-        this.totalTicks = totalTicks;
+        this.updateSeconds = updateSeconds;
 
-        this.maintenanceTicks = totalTicks - (20 * 60);
-        if (maintenanceTicks < 0) {
-            this.maintenanceTicks = (int) (totalTicks - (totalTicks * 0.1));
+        this.maintenanceSeconds = updateSeconds - 60;
+        if (maintenanceSeconds < 0) {
+            this.maintenanceSeconds = (int) (updateSeconds - (updateSeconds * 0.1));
         }
 
         this.runTaskTimerAsynchronously(plugin, 0, 20);
@@ -32,9 +30,9 @@ public class ShopTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        ticks++;
-        if (maintenanceTicks != -1 && ticks >= maintenanceTicks) {
-            maintenanceTicks = -1;
+        seconds++;
+        if (maintenanceSeconds != -1 && seconds >= maintenanceSeconds) {
+            maintenanceSeconds = -1;
             Bukkit.getScheduler().runTask(plugin, () -> {
                 shopManager.setShopMaintenance(true);
                 shopManager.closeShopInventory();
@@ -42,19 +40,16 @@ public class ShopTask extends BukkitRunnable {
             return;
         }
 
-        if (ticks >= totalTicks) {
-            shopManager.setShopMaintenance(false);
-
-            Set<String> internalNames = shopManager.getInternalNameSet();
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                for (String s : internalNames) {
-                    ShopItem shopItem = shopManager.getShopItem(s);
-                    if (shopItem != null) {
-                        shopItem.updatePrice();
-                    }
+        if (seconds >= updateSeconds) {
+            shopManager.getInternalNameList().forEach(s -> {
+                ShopItem shopItem = shopManager.getShopItem(s);
+                if (shopItem != null) {
+                    shopItem.updatePrice(shopManager);
                 }
             });
-            ticks = 0;
+
+            shopManager.setShopMaintenance(false);
+            seconds = 0;
         }
     }
 
