@@ -35,12 +35,48 @@ public class MMOItemsPriceManager {
         }
     }
 
-    public boolean hasPrice(String internalName) {
-        return priceMap.containsKey(internalName);
+    public void register(String mmoItemsId, double price) {
+        priceMap.put(mmoItemsId, price);
+        String path = "Data." + mmoItemsId;
+        mmoItemsPriceData.getConfig().set(path, price);
+        mmoItemsPriceData.saveConfig();
     }
 
-    public double getPrice(String internalName) {
-        return priceMap.getOrDefault(internalName, 0.0);
+    public void unregister(String mmoItemsId) {
+        priceMap.remove(mmoItemsId);
+        String path = "Data." + mmoItemsId;
+        if (mmoItemsPriceData.getConfig().contains(path)) {
+            mmoItemsPriceData.getConfig().set(path, null);
+            mmoItemsPriceData.saveConfig();
+        }
+    }
+
+    public boolean hasPrice(String mmoItemsId) {
+        return priceMap.containsKey(mmoItemsId);
+    }
+
+    public void setPrice(String mmoItemsId, double price) {
+        if (hasPrice(mmoItemsId)) {
+            priceMap.put(mmoItemsId, price);
+            String path = "Data." + mmoItemsId;
+            mmoItemsPriceData.getConfig().set(path, price);
+            mmoItemsPriceData.saveConfig();
+        }
+    }
+
+    public double getPrice(String mmoItemsId) {
+        if (hasPrice(mmoItemsId)) {
+            return priceMap.get(mmoItemsId);
+        }
+        return 0;
+    }
+
+    public Set<String> getMMOItemsIds() {
+        return priceMap.keySet();
+    }
+
+    public MMOItemsPriceData getMMOItemsPriceData() {
+        return mmoItemsPriceData;
     }
 
 }

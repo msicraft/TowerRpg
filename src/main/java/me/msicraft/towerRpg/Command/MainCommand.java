@@ -1,5 +1,7 @@
 package me.msicraft.towerRpg.Command;
 
+import io.lumine.mythic.lib.api.item.NBTItem;
+import me.msicraft.towerRpg.API.MMOItems.MMOItemsPriceManager;
 import me.msicraft.towerRpg.Shop.Data.ShopItem;
 import me.msicraft.towerRpg.Shop.ShopManager;
 import me.msicraft.towerRpg.SkillBook.Data.SkillBook;
@@ -64,6 +66,61 @@ public class MainCommand implements CommandExecutor {
                             }
                         } else {
                             sendPermissionMessage(sender);
+                        }
+                    }
+                    case "mmoitemsprice" -> {
+                        if (sender.isOp()) {
+                            if (sender instanceof Player player) {
+                                MMOItemsPriceManager mmoItemsPriceManager = plugin.getMMOItemsPriceManager();
+                                try {
+                                    String var2 = args[1];
+                                    switch (var2) {
+                                        case "register" -> {
+                                            ItemStack handStack = player.getInventory().getItemInMainHand();
+                                            if (handStack == null || handStack.getType() == Material.AIR) {
+                                                return false;
+                                            }
+                                            NBTItem nbtItem = NBTItem.get(handStack);
+                                            if (!nbtItem.hasType()) {
+                                                player.sendMessage(ChatColor.RED + "MMOItems 의 아이템이 아닙니다.");
+                                                return false;
+                                            }
+                                            String mmoItemsId = nbtItem.getString("MMOITEMS_ITEM_ID");
+                                            if (mmoItemsPriceManager.hasPrice(mmoItemsId)) {
+                                                player.sendMessage(ChatColor.RED + "MMOItemsId 가 이미 존재합니다.");
+                                                return false;
+                                            }
+                                            double price = Double.parseDouble(args[2]);
+
+                                            mmoItemsPriceManager.register(mmoItemsId, price);
+                                            player.sendMessage(ChatColor.GREEN + "아이템이 등록되었습니다");
+                                        }
+                                        case "unregister" -> {
+                                            String mmoItemsId = args[2];
+                                            if (!mmoItemsPriceManager.hasPrice(mmoItemsId)) {
+                                                player.sendMessage(ChatColor.RED + "해당 MMOItemsID 가 존재하지 않습니다.");
+                                                return false;
+                                            }
+                                            mmoItemsPriceManager.unregister(mmoItemsId);
+                                            player.sendMessage(ChatColor.RED + "아이템이 제거 되었습니다.");
+                                        }
+                                        case "change" -> {
+                                            String mmoItemsId = args[2];
+                                            if (!mmoItemsPriceManager.hasPrice(mmoItemsId)) {
+                                                player.sendMessage(ChatColor.RED + "해당 MMOItemsID 가 존재하지 않습니다.");
+                                                return false;
+                                            }
+                                            double price = Double.parseDouble(args[3]);
+                                            mmoItemsPriceManager.setPrice(mmoItemsId, price);
+                                            player.sendMessage(ChatColor.GREEN + "가격이 변경되었습니다.");
+                                        }
+                                    }
+                                    return true;
+                                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+                                    player.sendMessage(ChatColor.RED + "/towerrpg mmoitemsprice <register> <per_price>");
+                                    player.sendMessage(ChatColor.RED + "/towerrpg mmoitemsprice <unregister, change> <mmoItemsId> [<per_price>]");
+                                }
+                            }
                         }
                     }
                     case "skillbook" -> {

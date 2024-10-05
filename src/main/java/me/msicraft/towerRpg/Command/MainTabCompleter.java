@@ -22,7 +22,7 @@ public class MainTabCompleter implements TabCompleter {
         if (command.getName().equals("towerrpg")) {
             if (args.length == 1) {
                 if (sender.isOp()) {
-                    return List.of("reload", "shop", "skillbook");
+                    return List.of("reload", "shop", "skillbook", "mmoitemsprice");
                 }
             }
             if (args.length == 2) {
@@ -32,6 +32,8 @@ public class MainTabCompleter implements TabCompleter {
                         return List.of("register", "unregister");
                     } else if (var.equalsIgnoreCase("skillbook")) {
                         return plugin.getSkillBookManager().getSkillIdsToList();
+                    } else if (var.equalsIgnoreCase("mmoitemsprice")) {
+                        return List.of("register", "unregister", "change");
                     }
                 }
             }
@@ -41,15 +43,26 @@ public class MainTabCompleter implements TabCompleter {
                     String var2 = args[1];
                     if (var.equalsIgnoreCase("skillbook")) {
                         return List.of("<amount>");
-                    }
-                    if (var2.equalsIgnoreCase("unregister")) {
+                    } else if (var2.equalsIgnoreCase("unregister")) {
                         return plugin.getShopManager().getInternalNameList();
+                    } else if (var.equalsIgnoreCase("mmoitemsprice")) {
+                        if (var2.equalsIgnoreCase("register")) {
+                            return List.of("<per_price>");
+                        } else if (var2.equalsIgnoreCase("unregister") || var2.equalsIgnoreCase("change")) {
+                            return List.copyOf(plugin.getMMOItemsPriceManager().getMMOItemsIds());
+                        }
                     }
                 }
             }
             if (args.length == 4) {
                 if (sender.isOp()) {
+                    String var = args[0];
                     String var2 = args[1];
+                    if (var.equalsIgnoreCase("mmoitemsprice")) {
+                        if (var2.equalsIgnoreCase("change")) {
+                            return List.of("<per_price>");
+                        }
+                    }
                 }
             }
         }

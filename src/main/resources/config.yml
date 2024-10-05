@@ -1,5 +1,6 @@
 Setting:
   DisableEntityVehicleEnter: true
+  DisableBoneMeal: true
   Shop:
     UpdateSeconds: 3600
     MaxPricePercent: 0.25
@@ -16,28 +17,30 @@ Setting:
       TotalFloor: 1
       MaxPlayer: 4
 DisableItem:
-  - leather_helmet
-  - leather_chestplate
-  - leather_leggings
-  - leather_boots
-  - chainmail_helmet
-  - chainmail_chestplate
-  - chainmail_leggings
-  - chainmail_boots
-  - iron_helmet
-  - iron_chestplate
-  - iron_leggings
-  - iron_boots
-  - golden_helmet
-  - golden_chestplate
-  - golden_leggings
-  - golden_boots
-  - diamond_helmet
-  - diamond_chestplate
-  - diamond_leggings
-  - diamond_boots
-  - netherite_helmet
-  - netherite_chestplate
-  - netherite_leggings
-  - netherite_boots
-  - turtle_helmet
+  Enabled: true
+  List:
+    - leather_helmet
+    - leather_chestplate
+    - leather_leggings
+    - leather_boots
+    - chainmail_helmet
+    - chainmail_chestplate
+    - chainmail_leggings
+    - chainmail_boots
+    - iron_helmet
+    - iron_chestplate
+    - iron_leggings
+    - iron_boots
+    - golden_helmet
+    - golden_chestplate
+    - golden_leggings
+    - golden_boots
+    - diamond_helmet
+    - diamond_chestplate
+    - diamond_leggings
+    - diamond_boots
+    - netherite_helmet
+    - netherite_chestplate
+    - netherite_leggings
+    - netherite_boots
+    - turtle_helmet

@@ -10,6 +10,7 @@ import me.msicraft.towerRpg.Dungeon.DungeonManager;
 import me.msicraft.towerRpg.Dungeon.Event.DungeonRelatedEvent;
 import me.msicraft.towerRpg.Dungeon.Menu.Event.DungeonMenuEvent;
 import me.msicraft.towerRpg.Event.EntityRelatedEvent;
+import me.msicraft.towerRpg.Event.PlayerRelatedEvent;
 import me.msicraft.towerRpg.Menu.Event.MenuGuiEvent;
 import me.msicraft.towerRpg.Party.Menu.Event.PartyMenuEvent;
 import me.msicraft.towerRpg.Party.PartyManager;
@@ -104,6 +105,7 @@ public final class TowerRpg extends JavaPlugin {
         pluginManager.registerEvents(new SkillBookRelatedEvent(this), this);
         pluginManager.registerEvents(new MythicMobsRegisterEvent(this), this);
         pluginManager.registerEvents(new DisableItemEvent(this), this);
+        pluginManager.registerEvents(PlayerRelatedEvent.getInstance(), this);
     }
 
     public void registeredCommands() {
@@ -131,6 +133,7 @@ public final class TowerRpg extends JavaPlugin {
 
 
         EntityRelatedEvent.getInstance().reloadVariables();
+        PlayerRelatedEvent.getInstance().reloadVariables();
         skillBookManager.reloadVariables();
         disableItemManger.reloadVariables();
         mmoItemsPriceManager.reloadVariables();
@@ -197,6 +200,10 @@ public final class TowerRpg extends JavaPlugin {
 
     public DisableItemManger getDisableItemManger() {
         return disableItemManger;
+    }
+
+    public MMOItemsPriceManager getMMOItemsPriceManager() {
+        return mmoItemsPriceManager;
     }
 
 }

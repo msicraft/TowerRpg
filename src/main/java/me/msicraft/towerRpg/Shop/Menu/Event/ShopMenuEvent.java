@@ -1,6 +1,8 @@
 package me.msicraft.towerRpg.Shop.Menu.Event;
 
+import io.lumine.mythic.lib.api.item.NBTItem;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import me.msicraft.towerRpg.API.MMOItems.MMOItemsPriceManager;
 import me.msicraft.towerRpg.Menu.GuiType;
 import me.msicraft.towerRpg.Menu.MenuGui;
 import me.msicraft.towerRpg.PlayerData.Data.PlayerData;
@@ -82,7 +84,7 @@ public class ShopMenuEvent implements Listener {
                     }
                 }
             }
-            playerData.getTempData("ShopInventory_Sell_Stacks", null);
+            playerData.setTempData("ShopInventory_Sell_Stacks", null);
 
             if (reason != InventoryCloseEvent.Reason.CANT_USE) {
                 ShopManager shopManager = plugin.getShopManager();
@@ -203,14 +205,31 @@ public class ShopMenuEvent implements Listener {
                                 }
                             }
                             if (emptySlot != -1) {
+                                NBTItem nbtItem = NBTItem.get(selectItemStack);
+                                if (nbtItem.hasType()) {
+                                    String mmoItemId = nbtItem.getString("MMOITEMS_ITEM_ID");
+                                    if (mmoItemId != null) {
+                                        MMOItemsPriceManager mmoItemsPriceManager = plugin.getMMOItemsPriceManager();
+                                        if (mmoItemsPriceManager.hasPrice(mmoItemId.toUpperCase())) {
+                                            double price = mmoItemsPriceManager.getPrice(mmoItemId.toUpperCase());
+                                            SellItemSlot sellItemSlot = new SellItemSlot(SellItemSlot.ItemType.MMOITEMS, null, selectItemStack, (price * selectItemStack.getAmount()));
+                                            sellItemSlots[emptySlot] = sellItemSlot;
+
+                                            player.getInventory().setItem(clickSlot, GuiUtil.AIR_STACK);
+                                        } else {
+                                            player.sendMessage(ChatColor.RED + "해당 아이템을 판매할 수 없습니다.");
+                                        }
+                                        break;
+                                    }
+                                }
                                 ShopItem shopItem = shopManager.searchShopItem(selectItemStack);
                                 if (shopItem != null) {
-                                    SellItemSlot sellItemSlot = new SellItemSlot(shopItem.getId(), selectItemStack, (shopItem.getPrice(true) * selectItemStack.getAmount()));
+                                    SellItemSlot sellItemSlot = new SellItemSlot(SellItemSlot.ItemType.TOWER_RPG, shopItem.getId(), selectItemStack, (shopItem.getPrice(true) * selectItemStack.getAmount()));
                                     sellItemSlots[emptySlot] = sellItemSlot;
 
                                     player.getInventory().setItem(clickSlot, GuiUtil.AIR_STACK);
                                 } else {
-                                    player.sendMessage(ChatColor.RED + "해당 아이템의 판매가격이 0 이하 입니다.");
+                                    player.sendMessage(ChatColor.RED + "해당 아이템을 판매할 수 없습니다.");
                                 }
                             } else {
                                 player.sendMessage(ChatColor.RED + "빈 슬롯이 없습니다");

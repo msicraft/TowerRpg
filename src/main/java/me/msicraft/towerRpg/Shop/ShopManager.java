@@ -79,9 +79,9 @@ public class ShopManager extends CustomGuiManager {
         if (shopTask != null) {
             shopTask.cancel();
             shopTask = null;
-            setShopMaintenance(false);
         }
         shopTask = new ShopTask(plugin, this, updateSeconds);
+        setShopMaintenance(false);
     }
 
     public void sendMaintenanceMessage(Player player) {
@@ -192,12 +192,19 @@ public class ShopManager extends CustomGuiManager {
             double totalPrice = 0;
             for (SellItemSlot sellItemSlot : sellItemSlots) {
                 if (sellItemSlot != null) {
-                    ShopItem shopItem = getShopItem(sellItemSlot.getId());
-                    totalPrice = totalPrice + sellItemSlot.getTotalPrice();
+                    switch (sellItemSlot.getItemType()) {
+                        case TOWER_RPG -> {
+                            ShopItem shopItem = getShopItem(sellItemSlot.getId());
+                            totalPrice = totalPrice + sellItemSlot.getTotalPrice();
 
-                    int amount = sellItemSlot.getItemStack().getAmount();
-                    shopItem.addStock(amount);
-                    shopItem.addSellQuantity(amount);
+                            int amount = sellItemSlot.getItemStack().getAmount();
+                            shopItem.addStock(amount);
+                            shopItem.addSellQuantity(amount);
+                        }
+                        case MMOITEMS -> {
+                            totalPrice = totalPrice + sellItemSlot.getTotalPrice();
+                        }
+                    }
                 }
             }
             plugin.getEconomy().depositPlayer(player, totalPrice);
@@ -211,7 +218,9 @@ public class ShopManager extends CustomGuiManager {
     }
 
     public ShopItem searchShopItem(ItemStack itemStack) {
-        for (ShopItem shopItem : shopItemMap.values()) {
+        Set<String> keys = shopItemMap.keySet();
+        for (String key : keys) {
+            ShopItem shopItem = shopItemMap.get(key);
             if (shopItem.getItemStack().isSimilar(itemStack)) {
                 return shopItem;
             }

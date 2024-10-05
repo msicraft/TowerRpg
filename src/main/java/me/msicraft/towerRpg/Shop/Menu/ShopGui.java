@@ -145,14 +145,21 @@ public class ShopGui extends CustomGui {
                     }
                     ItemStack cloneStack = new ItemStack(sellStack);
                     ItemMeta itemMeta = cloneStack.getItemMeta();
-                    PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+                    //PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
                     //dataContainer.set(new NamespacedKey(plugin, dataTag), PersistentDataType.STRING, "Sell_ItemStack");
 
                     double price = 0;
-                    ShopItem shopItem = shopManager.searchShopItem(cloneStack);
-                    if (shopItem != null) {
-                        price = shopItem.getPrice(true) * cloneStack.getAmount();
-                        price = Math.round(price * 100.0) / 100.0;
+                    switch (sellItemSlot.getItemType()) {
+                        case TOWER_RPG -> {
+                            ShopItem shopItem = shopManager.searchShopItem(cloneStack);
+                            if (shopItem != null) {
+                                price = shopItem.getPrice(true) * cloneStack.getAmount();
+                                price = Math.round(price * 100.0) / 100.0;
+                            }
+                        }
+                        case MMOITEMS -> {
+                            price = Math.round(sellItemSlot.getTotalPrice() * 100.0) / 100.0;
+                        }
                     }
                     List<Component> lore = new ArrayList<>();
                     lore.add(Component.text(ChatColor.GREEN + "판매 가격: " + price));

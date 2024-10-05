@@ -13,15 +13,16 @@ public class ShopTask extends BukkitRunnable {
     private final int updateSeconds;
     private int maintenanceSeconds;
 
-    private int seconds = 0;
+    private int seconds;
 
     public ShopTask(TowerRpg plugin, ShopManager shopManager, int updateSeconds) {
         this.plugin = plugin;
         this.shopManager = shopManager;
         this.updateSeconds = updateSeconds;
+        this.seconds = updateSeconds;
 
         this.maintenanceSeconds = updateSeconds - 60;
-        if (maintenanceSeconds < 0) {
+        if (maintenanceSeconds <= 0) {
             this.maintenanceSeconds = (int) (updateSeconds - (updateSeconds * 0.1));
         }
 
@@ -30,8 +31,8 @@ public class ShopTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        seconds++;
-        if (maintenanceSeconds != -1 && seconds >= maintenanceSeconds) {
+        seconds--;
+        if (maintenanceSeconds != -1 && seconds <= maintenanceSeconds) {
             maintenanceSeconds = -1;
             Bukkit.getScheduler().runTask(plugin, () -> {
                 shopManager.setShopMaintenance(true);
@@ -40,7 +41,7 @@ public class ShopTask extends BukkitRunnable {
             return;
         }
 
-        if (seconds >= updateSeconds) {
+        if (seconds <= 0) {
             shopManager.getInternalNameList().forEach(s -> {
                 ShopItem shopItem = shopManager.getShopItem(s);
                 if (shopItem != null) {
@@ -49,7 +50,7 @@ public class ShopTask extends BukkitRunnable {
             });
 
             shopManager.setShopMaintenance(false);
-            seconds = 0;
+            seconds = updateSeconds;
         }
     }
 
