@@ -48,6 +48,7 @@ public final class TowerRpg extends JavaPlugin {
     }
 
     public static final String PREFIX = ChatColor.GREEN + "[TowerRpg] ";
+    private boolean useDebug = false;
 
     private Economy economy;
 
@@ -118,6 +119,7 @@ public final class TowerRpg extends JavaPlugin {
 
     public void reloadVariables() {
         reloadConfig();
+        this.useDebug = getConfig().contains("Debug") && getConfig().getBoolean("Debug");
         partyManager.reloadVariables();
         dungeonManager.reloadVariables();
         shopManager.reloadVariables();
@@ -169,6 +171,9 @@ public final class TowerRpg extends JavaPlugin {
         return Bukkit.getServer().getServicesManager().load(MythicDungeonsService.class);
     }
 
+    public boolean useDebug() {
+        return useDebug;
+    }
 
     public Economy getEconomy() {
         return economy;

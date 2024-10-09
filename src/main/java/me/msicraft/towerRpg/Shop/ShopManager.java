@@ -28,7 +28,7 @@ public class ShopManager extends CustomGuiManager {
     private final Map<String, ShopItem> shopItemMap = new ConcurrentHashMap<>();
     private final List<String> internalNameList = new ArrayList<>();
 
-    private int updateSeconds = 72000;
+    private int updateSeconds = 3600;
     private double maxPricePercent = 0.25;
     private double minPricePercent = 0.25;
     private int buyPriceChangeQuantity = 64;
@@ -276,7 +276,7 @@ public class ShopManager extends CustomGuiManager {
         return isShopMaintenance;
     }
 
-    public void setShopMaintenance(boolean shopMaintenance) {
+    public synchronized void setShopMaintenance(boolean shopMaintenance) {
         isShopMaintenance = shopMaintenance;
     }
 

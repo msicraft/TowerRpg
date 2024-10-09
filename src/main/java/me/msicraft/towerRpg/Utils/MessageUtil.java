@@ -1,5 +1,7 @@
 package me.msicraft.towerRpg.Utils;
 
+import me.msicraft.towerRpg.TowerRpg;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.util.regex.Matcher;
@@ -20,6 +22,13 @@ public class MessageUtil {
             matcher = HEX_PATTERN.matcher(message);
         }
         return message;
+    }
+
+    public static void sendDebugMessage(String prefix, String... messages) {
+        Bukkit.getConsoleSender().sendMessage(TowerRpg.PREFIX + ChatColor.YELLOW + "=====" + prefix + "=====");
+        for (String message : messages) {
+            Bukkit.getConsoleSender().sendMessage(TowerRpg.PREFIX + ChatColor.YELLOW + message);
+        }
     }
 
 }
