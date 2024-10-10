@@ -112,11 +112,17 @@ public class DungeonMenuEvent implements Listener {
                                     player.sendMessage(ChatColor.RED + "파티상태로 입장해주시기 바랍니다.");
                                     return;
                                 }
-                                String dungeonName = dungeonType.getKey() + "_" + data;
-                                if (playerData.canEnterDungeon(dungeonName)) {
+                                int floor = Integer.parseInt(data);
+                                String dungeonName = dungeonType.getKey() + "_" + floor;
+                                if (floor == 1) {
                                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "md play " + dungeonName + " " + player.getName());
                                 } else {
-                                    player.sendMessage(ChatColor.RED + "이전 층을 클리어해야 입장가능합니다.");
+                                    String previousDungeonFloorKey = dungeonType.getKey() + "_" + (floor - 1);
+                                    if (playerData.canEnterDungeon(previousDungeonFloorKey)) {
+                                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "md play " + dungeonName + " " + player.getName());
+                                    } else {
+                                        player.sendMessage(ChatColor.RED + "이전 층을 클리어해야 입장가능합니다.");
+                                    }
                                 }
                             }
                         }

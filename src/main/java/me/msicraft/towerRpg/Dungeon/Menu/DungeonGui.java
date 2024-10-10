@@ -70,7 +70,7 @@ public class DungeonGui extends CustomGui {
                 lore.add(ChatColor.YELLOW + "마지막 클리어 날짜: " + ChatColor.GREEN + TimeUtil.getTimeToFormat(lastClearTime));
             } else {
                 lore.add(ChatColor.YELLOW + "클리어 상태: " + ChatColor.RED + "X");
-                lore.add(ChatColor.YELLOW + "마지막 클리어 날짜: " + ChatColor.GREEN + "X");
+                //lore.add(ChatColor.YELLOW + "마지막 클리어 날짜: " + ChatColor.GREEN + "X");
             }
             String displayName = dungeonType.getDisplayName() + "-" + floor + "층";
             itemStack = GuiUtil.createItemStack(Material.PAPER, ChatColor.GREEN + displayName,lore, -1,
